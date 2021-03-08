@@ -5,9 +5,7 @@ INCDIR      = -I$(TOPDIR)/include
 STUBDIR     = 
 
 TARGET      = blankcut
-OBJS        = blankcut.o ¥
-              blank.o ¥
-              mto_memctrl.o
+OBJS        = blankcut.o blank.o mto_memctrl.o
 LIB_OBJS    = $(OBJS)
 PRX_OBJS    = $(OBJS)
 
@@ -31,15 +29,16 @@ LDFLAGS     = -Wl,--warn-common,--warn-constructors,--warn-multiple-gp
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
+	$(CC) -o $(TARGET) $(OBJS)
 
 .c.o:
-    $(CC) $(CFLAGS) $(TMPFLAGS) $(INCDIR) -Wa,-al=$*.lst -c $< -o $*.o
+	$(CC) $(CFLAGS) $(TMPFLAGS) $(INCDIR) -Wa,-al=$*.lst -c $< -o $*.o
 
 
 clean:
-    @$(RM) *.o *.map *.lst
-    @$(RM) $(TARGET)
-    @$(RM) *.bak
+	@$(RM) *.o *.map *.lst
+	@$(RM) $(TARGET)
+	@$(RM) *.bak
 
 
 install: all
