@@ -2,9 +2,10 @@
  * 本当によく使うものだけを集めたヘッダー。
  * ツールやテストプログラムに使われることを想定。
  * C/C++対応（インライン非対応Cコンパイラは知らない）
+ * C99/C11に対応(2021/03/08)
  * 
  * Fast 2010/08/24
- * Last 2011/09/02 Ver1.0.7                                        (c)T.Araki
+ * Last 2021/03/08 Ver1.0.8                                      (c)Tsuyoshi.A
 =============================================================================*/
 #ifndef _MTO_COMMON_H_
 #define _MTO_COMMON_H_
@@ -43,6 +44,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+
+// C99
+#include <stdint.h>
+#include <stdbool.h>
 
 #ifdef _USE_CPP
 #include <iostream>
@@ -164,12 +169,28 @@ enum {
 #define STRICMP(s0, s1)		stricmp(s0, s1)
 #endif
 
+// Windows互換
+#ifndef _MAX_PATH
+#define _MAX_PATH			(260)
+#endif
+#ifndef _MAX_FNAME
+#define _MAX_FNAME			(128)
+#endif
+#ifndef _MAX_DRIVE
+#define _MAX_DRIVE			(3)
+#endif
+#ifndef _MAX_DIR
+#define _MAX_DIR			(128)
+#endif
+#ifndef _MAX_EXT
+#define _MAX_EXT			(64)
+#endif
 
 /*---------------------------------------------------------------------------
  * 互換用変数
  *--------------------------------------------------------------------------*/
 #ifdef _USE_INT64
-typedef unsigned long long		uint64;
+	typedef unsigned long long uint64;
 typedef signed long long		sint64;
 #endif //_USE_INT64
 
