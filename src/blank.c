@@ -11,7 +11,7 @@
 */
 
 /*========================================================
-y‹@”\z‰æ‘œƒf[ƒ^æ“¾
+ã€æ©Ÿèƒ½ã€‘ç”»åƒãƒ‡ãƒ¼ã‚¿å–å¾—
 =========================================================*/
 static 
  _get_picture_data(FILE *fp, uint8 *work, uint32 msize, uint16 loop)
@@ -19,13 +19,13 @@ static
 	uint32 hsize = sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize;
 
 	if (bcut_mgr.wh.w == bcut_mgr.pwh.w) {
-		// •‚ª“¯‚¶H
+		// å¹…ãŒåŒã˜ï¼Ÿ
 		if (fread(work, msize, 1, fp) != 1) {
-			printf("\n‰æ‘œ“Ç‚İ‚İ¸”s : %d\n", loop);
+			printf("\nç”»åƒèª­ã¿è¾¼ã¿å¤±æ•— : %d\n", loop);
 			return false;
 		}
 	} else {
-		// •‚ªˆá‚¤‚È‚çƒTƒCƒY‚ÆˆÊ’u‚ğŒvZ
+		// å¹…ãŒé•ã†ãªã‚‰ã‚µã‚¤ã‚ºã¨ä½ç½®ã‚’è¨ˆç®—
 		int i, nw;
 		MPOINT pos;
 		uint32 lsize;
@@ -41,7 +41,7 @@ static
 
 		for (i = 0; i < bcut_mgr.wh.h; i++) {
 			if (fread(work, msize, 1, fp) != 1) {
-				printf("\n‰æ‘œ“Ç‚İ‚İ¸”s : %d\n", loop);
+				printf("\nç”»åƒèª­ã¿è¾¼ã¿å¤±æ•— : %d\n", loop);
 				return false;
 			}
 
@@ -55,34 +55,34 @@ static
 }
 
 /*========================================================
-y‹@”\z—]”’íœŒã‚ÌƒTƒCƒY‚ğw’è”{”‚É•â®
+ã€æ©Ÿèƒ½ã€‘ä½™ç™½å‰Šé™¤å¾Œã®ã‚µã‚¤ã‚ºã‚’æŒ‡å®šå€æ•°ã«è£œæ•´
 =========================================================*/
 static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
 {
 	MPOINT txy, twh;
 
-	// —]”’‚ğÈ‚¢‚½‰æ‘œƒTƒCƒY
+	// ä½™ç™½ã‚’çœã„ãŸç”»åƒã‚µã‚¤ã‚º
 	twh.w = bcp_head->ofs[1].x - bcp_head->ofs[0].x;
 	twh.h = bcp_head->ofs[1].h - bcp_head->ofs[0].h;
 
-	// ƒTƒCƒY•â®
+	// ã‚µã‚¤ã‚ºè£œæ•´
 	bcp_head->wh.w = BOUND(twh.w, rev);
 	bcp_head->wh.h = BOUND(twh.h, rev);
 
-	// •â®ƒTƒCƒY
+	// è£œæ•´ã‚µã‚¤ã‚º
 	txy.x = bcp_head->wh.w - twh.w;
 	txy.y = bcp_head->wh.h - twh.h;
 	if (txy.x == 0 && txy.y == 0) return true;
 
-	// •ÛŒ¯“I‚Éƒ`ƒFƒbƒN
+	// ä¿é™ºçš„ã«ãƒã‚§ãƒƒã‚¯
 	uint8 tw = bcut_mgr.wh.w - bcp_head->ofs[1].x;
 	uint8 th = bcut_mgr.wh.h - bcp_head->ofs[1].y;
 	if ((bcp_head->ofs[0].x + tw) < txy.x) {
-		printf("—]”’‚ğÈ‚¢‚½Œã‚Ì•‚ª•s³‚Å‚·\n");
+		printf("ä½™ç™½ã‚’çœã„ãŸå¾Œã®å¹…ãŒä¸æ­£ã§ã™\n");
 		return false;
 	}
 	if ((bcp_head->ofs[0].y + th) < txy.y) {
-		printf("—]”’‚ğÈ‚¢‚½Œã‚Ì‚‚³‚ª•s³‚Å‚·\n");
+		printf("ä½™ç™½ã‚’çœã„ãŸå¾Œã®é«˜ã•ãŒä¸æ­£ã§ã™\n");
 		return false;
 	}
 
@@ -98,7 +98,7 @@ static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
 	} else if (tw <= tx[0]) {
 		bcp_head->ofs[0].x -= (txy.x - tw);
 		bcp_head->ofs[1].x  = bcut_mgr.wh.w;
-	} else if (bcut_mgr.optr) { // ‰E•Ó‚ğ—Dæ‚É•Ï‚¦‚é
+	} else if (bcut_mgr.optr) { // å³è¾ºã‚’å„ªå…ˆã«å¤‰ãˆã‚‹
 		bcp_head->ofs[1].x += txy.x;
 	} else {
 		bcp_head->ofs[0].x -= tx[0];
@@ -116,7 +116,7 @@ static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
 	} else if (th < ty[0]) {
 		bcp_head->ofs[0].y -= (txy.y - th);
 		bcp_head->ofs[1].y  = bcut_mgr.wh.h;
-	} else if (bcp_head->ofs[0].y >= txy.y && bcut_mgr.optb) { // ã•Ó—Dæ‚É•Ï‚¦‚é
+	} else if (bcp_head->ofs[0].y >= txy.y && bcut_mgr.optb) { // ä¸Šè¾ºå„ªå…ˆã«å¤‰ãˆã‚‹
 		bcp_head->ofs[0].y -= txy.y;
 	} else {
 		bcp_head->ofs[0].y -= ty[1];
@@ -127,8 +127,8 @@ static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
 }
 
 /*========================================================
-y‹@”\z—]”’ˆÊ’uİ’è
-y–ß’lz0:error 1:cut ok 2:all blank
+ã€æ©Ÿèƒ½ã€‘ä½™ç™½ä½ç½®è¨­å®š
+ã€æˆ»å€¤ã€‘0:error 1:cut ok 2:all blank
 =========================================================*/
 static int _get_blank_position(FILE *fp, uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_head)
 {
@@ -137,23 +137,23 @@ static int _get_blank_position(FILE *fp, uint8 *work, uint32 msize, BlankCutPixc
 
 	switch (bcut_mgr.bit) {
 	case 8:
-		// Šî€‚Æ‚È‚éindexæ“¾
+		// åŸºæº–ã¨ãªã‚‹indexå–å¾—
 		if (bcut_mgr.datums) {
 			datums = *(work + msize - 1);
 		} else {
 			datums = *work;
 		}
 
-		// —]”’ŒŸõ(¶ã)
+		// ä½™ç™½æ¤œç´¢(å·¦ä¸Š)
 		cnt = 0;
-		while (datums == *(work + cnt)) { // ã¨‰º(Y)
+		while (datums == *(work + cnt)) { // ä¸Šâ†’ä¸‹(Y)
 			if (++cnt >= msize) return 2;
 		}
 		bcp_head->ofs[0].y = cnt / bcut_mgr.wh.w;
 
 		cnt   = 0;
 		pitch = GPITCH(bcut_mgr.wh.w, bcut_mgr.bit);
-		for (i = 0; i < bcut_mgr.wh.w; i++, cnt++) { // ¶¨‰E(X)
+		for (i = 0; i < bcut_mgr.wh.w; i++, cnt++) { // å·¦â†’å³(X)
 			for (j = 0; j < bcut_mgr.wh.h; j++) {
 				if (datums != *(work + i + j * pitch)) goto _cut_loop_end1;
 			}
@@ -161,15 +161,15 @@ static int _get_blank_position(FILE *fp, uint8 *work, uint32 msize, BlankCutPixc
 _cut_loop_end1:
 		bcp_head->ofs[0].x = cnt % bcut_mgr.wh.w;
 
-		// —]”’ŒŸõ(‰E‰º)
+		// ä½™ç™½æ¤œç´¢(å³ä¸‹)
 		cnt = msize - 1;
-		while (datums == *(work + cnt)) { // ‰º¨ã(Y)
+		while (datums == *(work + cnt)) { // ä¸‹â†’ä¸Š(Y)
 			if (--cnt == 0) return 2;
 		}
-		bcp_head->ofs[1].y = cnt / bcut_mgr.wh.w + 1; // ‰º‚©‚ç’²‚×‚Ä‚é‚Ì‚Å+1
+		bcp_head->ofs[1].y = cnt / bcut_mgr.wh.w + 1; // ä¸‹ã‹ã‚‰èª¿ã¹ã¦ã‚‹ã®ã§+1
 
 		cnt = msize - 1;
-		for (i = (bcut_mgr.wh.w - 1); i >= 0 ; i--, cnt--) { // ‰E¨¶(X)
+		for (i = (bcut_mgr.wh.w - 1); i >= 0 ; i--, cnt--) { // å³â†’å·¦(X)
 			for (j = (bcut_mgr.wh.h - 1); j >= 0; j--) {
 				if (datums != *(work + i + j * pitch)) goto _cut_loop_end2;
 			}
@@ -177,27 +177,27 @@ _cut_loop_end1:
 _cut_loop_end2:
 		bcp_head->ofs[1].x = cnt % bcut_mgr.wh.w + 1;
 
-		// d—lã8pixcel”{”‚Å‚È‚¢‚Æ‚¢‚¯‚È‚¢‚Ì‚Å•â®ŒvZ
+		// ä»•æ§˜ä¸Š8pixcelå€æ•°ã§ãªã„ã¨ã„ã‘ãªã„ã®ã§è£œæ•´è¨ˆç®—
 		if (!_size_revision(bcp_head, 8)) return 0;
 		break;
 	case 32:
-		// Šî€‚Æ‚È‚épixcelæ“¾
+		// åŸºæº–ã¨ãªã‚‹pixcelå–å¾—
 		if (bcut_mgr.datums) {
 			datums = *((uint32*)(work + msize - 4));
 		} else {
 			datums = *((uint32*)work);
 		}
 
-		// —]”’ŒŸõ(¶ã)
+		// ä½™ç™½æ¤œç´¢(å·¦ä¸Š)
 		cnt = 0;
-		while (datums == *((uint32*)(work + cnt))) { // ã¨‰º(Y)
+		while (datums == *((uint32*)(work + cnt))) { // ä¸Šâ†’ä¸‹(Y)
 			if ((cnt += 4) >= msize) return 2;
 		}
 		bcp_head->ofs[0].y = (cnt / 4) / bcut_mgr.wh.w;
 
 		cnt   = 0;
 		pitch = GPITCH(bcut_mgr.wh.w, bcut_mgr.bit);
-		for (i = 0; i < bcut_mgr.wh.w; i++, cnt += 4) { // ¶¨‰E(X)
+		for (i = 0; i < bcut_mgr.wh.w; i++, cnt += 4) { // å·¦â†’å³(X)
 			for (j = 0; j < bcut_mgr.wh.h; j++) {
 				if (datums != *((uint32*)(work + i * 4 + j * pitch))) goto _cut_loop_end3;
 			}
@@ -205,15 +205,15 @@ _cut_loop_end2:
 _cut_loop_end3:
 		bcp_head->ofs[0].x = (cnt / 4) % bcut_mgr.wh.w;
 
-		// —]”’ŒŸõ(‰E‰º)
+		// ä½™ç™½æ¤œç´¢(å³ä¸‹)
 		cnt = msize - 4;
-		while (datums == *((uint32*)(work + cnt))) { // ‰º¨ã(Y)
+		while (datums == *((uint32*)(work + cnt))) { // ä¸‹â†’ä¸Š(Y)
 			if ((cnt -= 4) == 0) return 2;
 		}
-		bcp_head->ofs[1].y = (cnt / 4) / bcut_mgr.wh.w + 1; // ‰º‚©‚ç’²‚×‚Ä‚é‚Ì‚Å+1
+		bcp_head->ofs[1].y = (cnt / 4) / bcut_mgr.wh.w + 1; // ä¸‹ã‹ã‚‰èª¿ã¹ã¦ã‚‹ã®ã§+1
 
 		cnt = msize - 4;
-		for (i = (bcut_mgr.wh.w - 1); i >= 0 ; i--, cnt -= 4) { // ‰E¨¶(X)
+		for (i = (bcut_mgr.wh.w - 1); i >= 0 ; i--, cnt -= 4) { // å³â†’å·¦(X)
 			for (j = (bcut_mgr.wh.h - 1); j >= 0; j--) {
 				if (datums != *((uint32*)(work + i * 4 + j * pitch))) goto _cut_loop_end4;
 			}
@@ -221,7 +221,7 @@ _cut_loop_end3:
 _cut_loop_end4:
 		bcp_head->ofs[1].x = (cnt / 4) % bcut_mgr.wh.w + 1;
 
-		// d—lã2pixcel”{”‚Å‚È‚¢‚Æ‚¢‚¯‚È‚¢‚Ì‚Å•â®ŒvZ
+		// ä»•æ§˜ä¸Š2pixcelå€æ•°ã§ãªã„ã¨ã„ã‘ãªã„ã®ã§è£œæ•´è¨ˆç®—
 		if (!_size_revision(bcp_head, 2)) return 0;
 		break;
 	}
@@ -231,7 +231,7 @@ _cut_loop_end4:
 }
 
 /*========================================================
-y‹@”\z—]”’íœ
+ã€æ©Ÿèƒ½ã€‘ä½™ç™½å‰Šé™¤
 =========================================================*/
 static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_head)
 {
@@ -300,11 +300,11 @@ static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_he
 }
 
 /*========================================================
-y‹@”\zƒe[ƒuƒ‹o—Í
+ã€æ©Ÿèƒ½ã€‘ãƒ†ãƒ¼ãƒ–ãƒ«å‡ºåŠ›
 =========================================================*/
 static bool _output_table(void)
 {
-	if (!bcut_mgr.optt) return true; // ƒe[ƒuƒ‹o—Í‚È‚µ
+	if (!bcut_mgr.optt) return true; // ãƒ†ãƒ¼ãƒ–ãƒ«å‡ºåŠ›ãªã—
 
 	int i;
 	FILE *tfp;
@@ -360,7 +360,7 @@ static bool _output_table(void)
 }
 
 /*========================================================
-y‹@”\zI—¹ˆ—
+ã€æ©Ÿèƒ½ã€‘çµ‚äº†å‡¦ç†
 =========================================================*/
 static void _end_process(FILE *tfp, FILE *hfp)
 {
@@ -380,7 +380,7 @@ static void _end_process(FILE *tfp, FILE *hfp)
 
 
 /*========================================================
-y‹@”\z—]”’‚ğíœ‚µo—Í
+ã€æ©Ÿèƒ½ã€‘ä½™ç™½ã‚’å‰Šé™¤ã—å‡ºåŠ›
 =========================================================*/
 bool search_blank_output(void)
 {
@@ -418,7 +418,7 @@ bool search_blank_output(void)
 	loop  = 0;
 
 	if (lpmax == 0) {
-		printf("‰æ‘œƒf[ƒ^A‚Ü‚½‚Íw’èƒTƒCƒY‚ª•s³‚Å‚·\n");
+		printf("ç”»åƒãƒ‡ãƒ¼ã‚¿ã€ã¾ãŸã¯æŒ‡å®šã‚µã‚¤ã‚ºãŒä¸æ­£ã§ã™\n");
 		_end_process(tfp, hfp);
 		return false;
 	}
@@ -494,7 +494,7 @@ bool search_blank_output(void)
 
 	// output file
 	if (!fileopen(&ofp, bcut_mgr.path, "wb", NULL)) {
-		printf("o—Íƒtƒ@ƒCƒ‹‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B\n");
+		printf("å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚\n");
 		_end_process(NULL, NULL);
 		return false;
 	}

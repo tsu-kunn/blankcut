@@ -9,9 +9,9 @@ extern "C" {
 
 
 enum {
-	eMEM_LOCK = 0,					// ƒ\ƒtƒgƒEƒFƒAƒŠƒZƒbƒg‚Å‰ð•ú‚³‚ê‚È‚¢ 
-	eMEM_UNLOCK,					// ƒ\ƒtƒgƒEƒFƒAƒŠƒZƒbƒg‚Å‰ð•ú‚³‚ê‚é
-	eMEM_SYSTEM						// ŠÇ—‘®«iˆø”‚ÉŽw’è‚µ‚È‚¢‚Å‚­‚¾‚³‚¢j
+	eMEM_LOCK = 0,					// ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ãƒªã‚»ãƒƒãƒˆã§è§£æ”¾ã•ã‚Œãªã„ 
+	eMEM_UNLOCK,					// ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ãƒªã‚»ãƒƒãƒˆã§è§£æ”¾ã•ã‚Œã‚‹
+	eMEM_SYSTEM						// ç®¡ç†å±žæ€§ï¼ˆå¼•æ•°ã«æŒ‡å®šã—ãªã„ã§ãã ã•ã„ï¼‰
 };
 
 
@@ -24,8 +24,8 @@ enum {
 #define memalloc(x)		malloc((x))
 #endif // _USE_MEM_CTRL
 
-#define cMEM_ALIGIN		32						// ƒAƒ‰ƒCƒƒ“ƒg(4,8,16,32,64,128)
-#define cMEM_SIZE(x)	((x) * 1024 * 1024)		// 1M’PˆÊ
+#define cMEM_ALIGIN		32						// ã‚¢ãƒ©ã‚¤ãƒ¡ãƒ³ãƒˆ(4,8,16,32,64,128)
+#define cMEM_SIZE(x)	((x) * 1024 * 1024)		// 1Må˜ä½
 
 
 

@@ -2,65 +2,65 @@
 #define _BLANK_CUT_H_
 
 /*----------------------------------------------------------------------------
-@Eƒtƒ@ƒCƒ‹\‘¢
-     „¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
-     „ ƒtƒ@ƒCƒ‹ƒwƒbƒ_„ 
-     „¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
-     „  Pixcelƒwƒbƒ_ „ 
-     „¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
-     „  Pixcelƒf[ƒ^ „ 
-     „¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+ã€€ãƒ»ãƒ•ã‚¡ã‚¤ãƒ«æ§‹é€ 
+     â”Œâ”€â”€â”€â”€â”€â”€â”€â”
+     â”‚ãƒ•ã‚¡ã‚¤ãƒ«ãƒ˜ãƒƒãƒ€â”‚
+     â”œâ”€â”€â”€â”€â”€â”€â”€â”¤
+     â”‚ Pixcelãƒ˜ãƒƒãƒ€ â”‚
+     â”œâ”€â”€â”€â”€â”€â”€â”€â”¤
+     â”‚ Pixcelãƒ‡ãƒ¼ã‚¿ â”‚
+     â””â”€â”€â”€â”€â”€â”€â”€â”˜
 -----------------------------------------------------------------------------*/
 typedef struct tagBlankCutHeader {
 	char	id[4];			// [ 4] ID('B', 'L', 'C', '\0')
-	uint32	PixcelNum;		// [ 4] ƒsƒNƒZƒ‹ƒf[ƒ^”
-	uint32	PixcelHeadPos;	// [ 4] ƒsƒNƒZƒ‹ƒwƒbƒ_‚ÌˆÊ’u
-	uint32	PixcelDataPos;	// [ 4] ƒsƒNƒZƒ‹ƒf[ƒ^ˆÊ’u
-	uint32	WidthMax;		// [ 4] Å‘å•
-	uint32	HeightMax;		// [ 4] Å‘å‚‚³
-	uint32	SizeMax;		// [ 4] Å‘åƒTƒCƒY
+	uint32	PixcelNum;		// [ 4] ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿æ•°
+	uint32	PixcelHeadPos;	// [ 4] ãƒ”ã‚¯ã‚»ãƒ«ãƒ˜ãƒƒãƒ€ã®ä½ç½®
+	uint32	PixcelDataPos;	// [ 4] ãƒ”ã‚¯ã‚»ãƒ«ãƒ‡ãƒ¼ã‚¿ä½ç½®
+	uint32	WidthMax;		// [ 4] æœ€å¤§å¹…
+	uint32	HeightMax;		// [ 4] æœ€å¤§é«˜ã•
+	uint32	SizeMax;		// [ 4] æœ€å¤§ã‚µã‚¤ã‚º
 	uint32	padding;		// [ 4]
 } BlankCutHeader;			// [32byte]
 
 typedef struct tagBlankCutPixcelHeader {
-	uint32	size;			// [ 4] ƒf[ƒ^ƒTƒCƒY
-	uint32	pixpos;			// [ 4] pixcelƒf[ƒ^‚ÌˆÊ’u(pixcelƒf[ƒ^ˆÊ’u‚©‚ç)
-	MPOINT	wh;				// [ 8] ‰æ‘œƒTƒCƒY
-	MPOINT	fwh;			// [ 8] Œ³‰æ‘œƒTƒCƒY
-	MPOINT	ofs[2];			// [16] ƒIƒtƒZƒbƒg(0:¶ã 1:‰E‰º)
+	uint32	size;			// [ 4] ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
+	uint32	pixpos;			// [ 4] pixcelãƒ‡ãƒ¼ã‚¿ã®ä½ç½®(pixcelãƒ‡ãƒ¼ã‚¿ä½ç½®ã‹ã‚‰)
+	MPOINT	wh;				// [ 8] ç”»åƒã‚µã‚¤ã‚º
+	MPOINT	fwh;			// [ 8] å…ƒç”»åƒã‚µã‚¤ã‚º
+	MPOINT	ofs[2];			// [16] ã‚ªãƒ•ã‚»ãƒƒãƒˆ(0:å·¦ä¸Š 1:å³ä¸‹)
 	uint32	pad[2];			// [ 8]
 } BlankCutPixcelHeader;		// [48]
 
 typedef struct tagBlankCutManager {
 	FILE	*fp;
-	uint32	fsize;		// ƒtƒ@ƒCƒ‹ƒTƒCƒY
+	uint32	fsize;		// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚º
 
 	uint8	*clut;		// clut data
 	uint32	csize;		// clut size
 
-	uint8	datums;		// Šî€“_
-	uint8	infile;		// “ü—Íƒtƒ@ƒCƒ‹‚ÌˆÊ’u
+	uint8	datums;		// åŸºæº–ç‚¹
+	uint8	infile;		// å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½ç½®
 	uint8	pad0[2];
 
 	uint8	pad1;
-	uint8	bit;		// ‰æ‘œƒrƒbƒg”
-	uint16	bitcount;	// ƒpƒŒƒbƒg”
+	uint8	bit;		// ç”»åƒãƒ“ãƒƒãƒˆæ•°
+	uint16	bitcount;	// ãƒ‘ãƒ¬ãƒƒãƒˆæ•°
 
-	uint8	optq;		// •W€o—Í‚Ö‚Ìo—Í§Œä
-	uint8	optt;		// ƒe[ƒuƒ‹o—Í
-	uint8	optg;		// tim2o—Í
-	uint8	optb:4;		// •â³ƒ^ƒCƒviã•Ó/‰º•Ój
-	uint8	optr:4;		// •â³ƒ^ƒCƒvi¶•Ó/‰E•Ój
+	uint8	optq;		// æ¨™æº–å‡ºåŠ›ã¸ã®å‡ºåŠ›åˆ¶å¾¡
+	uint8	optt;		// ãƒ†ãƒ¼ãƒ–ãƒ«å‡ºåŠ›
+	uint8	optg;		// tim2å‡ºåŠ›
+	uint8	optb:4;		// è£œæ­£ã‚¿ã‚¤ãƒ—ï¼ˆä¸Šè¾º/ä¸‹è¾ºï¼‰
+	uint8	optr:4;		// è£œæ­£ã‚¿ã‚¤ãƒ—ï¼ˆå·¦è¾º/å³è¾ºï¼‰
 
-	MPOINT	pwh;		// ‰æ‘œƒTƒCƒY
-	MPOINT	wh;			// ƒ`ƒFƒbƒN‚·‚éƒTƒCƒY
+	MPOINT	pwh;		// ç”»åƒã‚µã‚¤ã‚º
+	MPOINT	wh;			// ãƒã‚§ãƒƒã‚¯ã™ã‚‹ã‚µã‚¤ã‚º
 
 	TIM2_FILEHEADER    tm2fHead;
 	TIM2_PICTUREHEADER tm2pHead;
 
 	BlankCutHeader		bc_head;
 
-	// ƒtƒ@ƒCƒ‹ƒpƒX—p
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ç”¨
 	char	path[_MAX_PATH];
 	char	drive[_MAX_DRIVE];
 	char	dir[_MAX_DIR];

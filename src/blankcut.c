@@ -14,7 +14,7 @@ BlankCutManager bcut_mgr;
 
 
 /*========================================================
-y‹@”\z‘€ìà–¾
+ã€æ©Ÿèƒ½ã€‘æ“ä½œèª¬æ˜
 =========================================================*/
 static void _info_draw(void)
 {
@@ -23,39 +23,39 @@ static void _info_draw(void)
 	printf("\n");
 	printf("blankcut [option] [in file] [out file]\n");
 	printf("    [option]\n");
-	printf("       -?       : ƒwƒ‹ƒvo—Í\n");
-	printf("       -p [pos] : Šî€ˆÊ’u\n");
-	printf("                  ‚OF¶ã(default)\n");
-	printf("                  ‚PF‰E‰º\n");
-	printf("       -w       : ƒ`ƒFƒbƒN‚·‚é•@(È—ª‚Í‰æ‘œ•)\n");
-	printf("       -h       : ƒ`ƒFƒbƒN‚·‚é‚‚³(È—ª‚Í‰æ‘œ‚‚³)\n");
-	printf("       -r       : ••â³‚ÌA‰E•Ó‚ğ—Dæ“I‚É•ÏX‚·‚é¦\n");
-	printf("       -b       : ‚‚³•â³‚ÌAã•Ó‚ğ—Dæ“I‚É•ÏX‚·‚é¦\n");
-	printf("       -t       : ƒe[ƒuƒ‹o—Í\n");
-	printf("       -g       : —]”’‚ğí‚Á‚½tim2o—Í\n");
-	printf("       -q       : •W€o—Í‚Ö‚Ìo—Í§Œä\n");
+	printf("       -?       : ãƒ˜ãƒ«ãƒ—å‡ºåŠ›\n");
+	printf("       -p [pos] : åŸºæº–ä½ç½®\n");
+	printf("                  ï¼ï¼šå·¦ä¸Š(default)\n");
+	printf("                  ï¼‘ï¼šå³ä¸‹\n");
+	printf("       -w       : ãƒã‚§ãƒƒã‚¯ã™ã‚‹å¹…ã€€(çœç•¥æ™‚ã¯ç”»åƒå¹…)\n");
+	printf("       -h       : ãƒã‚§ãƒƒã‚¯ã™ã‚‹é«˜ã•(çœç•¥æ™‚ã¯ç”»åƒé«˜ã•)\n");
+	printf("       -r       : å¹…è£œæ­£ã®æ™‚ã€å³è¾ºã‚’å„ªå…ˆçš„ã«å¤‰æ›´ã™ã‚‹â€»\n");
+	printf("       -b       : é«˜ã•è£œæ­£ã®æ™‚ã€ä¸Šè¾ºã‚’å„ªå…ˆçš„ã«å¤‰æ›´ã™ã‚‹â€»\n");
+	printf("       -t       : ãƒ†ãƒ¼ãƒ–ãƒ«å‡ºåŠ›\n");
+	printf("       -g       : ä½™ç™½ã‚’å‰Šã£ãŸtim2å‡ºåŠ›\n");
+	printf("       -q       : æ¨™æº–å‡ºåŠ›ã¸ã®å‡ºåŠ›åˆ¶å¾¡\n");
 	printf("\n");
-	printf("[out file]‚ÍÈ—ª‰Â”\B\n");
-	printf("‚»‚Ìê‡‚Í[in file]‚Æ“¯‚¶ˆÊ’u‚Éo—Í‚³‚ê‚éB\n");
+	printf("[out file]ã¯çœç•¥å¯èƒ½ã€‚\n");
+	printf("ãã®å ´åˆã¯[in file]ã¨åŒã˜ä½ç½®ã«å‡ºåŠ›ã•ã‚Œã‚‹ã€‚\n");
 	printf("\n");
-	printf("¦È—ª‚Í’†‰›‘µ‚¦B\n");
+	printf("â€»çœç•¥æ™‚ã¯ä¸­å¤®æƒãˆã€‚\n");
 }
 
 /*========================================================
-y‹@”\zƒIƒvƒVƒ‡ƒ“‚Ì—L–³‚ğ’²‚×‚é
+ã€æ©Ÿèƒ½ã€‘ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®æœ‰ç„¡ã‚’èª¿ã¹ã‚‹
 =========================================================*/
 static int _check_option(int argc, char *argv[])
 {
 	int opt = 1, dat;
 	char *stp;
 
-	// ˆø”‚È‚µ
+	// å¼•æ•°ãªã—
 	if (argc == 1) {
 		_info_draw();
 		return 0;
 	}
 
-	// ƒIƒvƒVƒ‡ƒ“‚ª‚ ‚éH
+	// ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ï¼Ÿ
 	while (argv[opt][0] == '-') {
 		switch (argv[opt][1]) {
 		case 'p': case 'P':
@@ -63,20 +63,20 @@ static int _check_option(int argc, char *argv[])
 			if (dat < 2) {
 				bcut_mgr.datums = dat;
 			} else {
-				printf("ƒIƒvƒVƒ‡ƒ“‚Ì’l‚ª•s³‚Å‚·B\n");
+				printf("ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®å€¤ãŒä¸æ­£ã§ã™ã€‚\n");
 				return 0;
 			}
 			break;
 		case 'w': case 'W':
 			if (++opt >= argc) {
-				printf("•‚Ì’l‚ªw’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB\n");
+				printf("å¹…ã®å€¤ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚\n");
 				return 0;
 			}
 			bcut_mgr.wh.w = strtol(argv[opt], &stp, 0);
 			break;
 		case 'h': case 'H':
 			if (++opt >= argc) {
-				printf("‚‚³‚Ì’l‚ªw’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB\n");
+				printf("é«˜ã•ã®å€¤ãŒæŒ‡å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚\n");
 				return 0;
 			}
 			bcut_mgr.wh.h = strtol(argv[opt], &stp, 0);
@@ -100,13 +100,13 @@ static int _check_option(int argc, char *argv[])
 			_info_draw();
 			return 0;
 		default:
-			printf("ƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢Šg’£q‚Å‚·\n");
-			printf("wblankcut -?x‚Åƒwƒ‹ƒv\n");
+			printf("ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„æ‹¡å¼µå­ã§ã™\n");
+			printf("ã€blankcut -?ã€ã§ãƒ˜ãƒ«ãƒ—\n");
 			return 0;
 		}
 
-		if (++opt > (argc - 2)) { // -2:“ü—ÍAo—Íƒtƒ@ƒCƒ‹
-			printf("ƒIƒvƒVƒ‡ƒ“‚Ìw’è‚ª•s³‚Å‚·B\n");
+		if (++opt > (argc - 2)) { // -2:å…¥åŠ›ã€å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«
+			printf("ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®æŒ‡å®šãŒä¸æ­£ã§ã™ã€‚\n");
 			return 0;
 		}
 	}
@@ -115,7 +115,7 @@ static int _check_option(int argc, char *argv[])
 }
 
 /*========================================================
-y‹@”\zI—¹ˆ—
+ã€æ©Ÿèƒ½ã€‘çµ‚äº†å‡¦ç†
 =========================================================*/
 static void _release(void)
 {
@@ -124,7 +124,7 @@ static void _release(void)
 }
 
 /*========================================================
-y‹@”\zTim2ƒwƒbƒ_‚Ì“Ç‚İ‚İ•ƒ`ƒFƒbƒN
+ã€æ©Ÿèƒ½ã€‘Tim2ãƒ˜ãƒƒãƒ€ã®èª­ã¿è¾¼ã¿ï¼†ãƒã‚§ãƒƒã‚¯
 =========================================================*/
 static bool _read_check_tim2(void)
 {
@@ -135,7 +135,7 @@ static bool _read_check_tim2(void)
 	// check tim2
 	if (!(bcut_mgr.tm2fHead.FileId[0] == 'T' && bcut_mgr.tm2fHead.FileId[1] == 'I' &&
 		  bcut_mgr.tm2fHead.FileId[2] == 'M' && bcut_mgr.tm2fHead.FileId[3] == '2')) {
-		printf("Tim2‚Å‚Í‚ ‚è‚Ü‚¹‚ñ\n");
+		printf("Tim2ã§ã¯ã‚ã‚Šã¾ã›ã‚“\n");
 		return false;
 	}
 
@@ -144,7 +144,7 @@ static bool _read_check_tim2(void)
 	bcut_mgr.pwh.h = bcut_mgr.tm2pHead.ImageHeight;
 
 	if ((bcut_mgr.wh.w > bcut_mgr.pwh.w) || (bcut_mgr.wh.h > bcut_mgr.pwh.h)) {
-		printf("w’èƒTƒCƒY‚ª‰æ‘œƒTƒCƒY‚ğ’´‚¦‚Ä‚¢‚Ü‚·\n");
+		printf("æŒ‡å®šã‚µã‚¤ã‚ºãŒç”»åƒã‚µã‚¤ã‚ºã‚’è¶…ãˆã¦ã„ã¾ã™\n");
 		printf("width :%4d/%4d\n", bcut_mgr.wh.w, bcut_mgr.pwh.w);
 		printf("height:%4d/%4d\n", bcut_mgr.wh.h, bcut_mgr.pwh.h);
 		return false;
@@ -153,7 +153,7 @@ static bool _read_check_tim2(void)
 	bcut_mgr.wh.w = bcut_mgr.wh.w ? bcut_mgr.wh.w : bcut_mgr.pwh.w;
 	bcut_mgr.wh.h = bcut_mgr.wh.h ? bcut_mgr.wh.h : bcut_mgr.pwh.h;
 
-	// ‰æ‘œ‚Ìƒrƒbƒg”æ“¾
+	// ç”»åƒã®ãƒ“ãƒƒãƒˆæ•°å–å¾—
 	switch (bcut_mgr.tm2pHead.ImageType) {
 //	case 0x01:
 //		bcut_mgr.bit = 16;
@@ -176,7 +176,7 @@ static bool _read_check_tim2(void)
 		bcut_mgr.bitcount = 256;
 		break;
 	default:
-		printf("‘Î‰ƒtƒH[ƒ}ƒbƒg‚Í8bit‚Æ32bitƒJƒ‰[‚Å‚·\n");
+		printf("å¯¾å¿œãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã¯8bitã¨32bitã‚«ãƒ©ãƒ¼ã§ã™\n");
 		return false;
 	}
 
@@ -184,7 +184,7 @@ static bool _read_check_tim2(void)
 }
 
 /*========================================================
-y‹@”\zclutƒf[ƒ^“Ç‚İ‚İ
+ã€æ©Ÿèƒ½ã€‘clutãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 =========================================================*/
 static bool _read_clut(void)
 {
@@ -192,7 +192,7 @@ static bool _read_clut(void)
 	uint32 fpos;
 
 	if (bcut_mgr.bit <= 8) {
-		// Œ»İ’næ“¾
+		// ç¾åœ¨åœ°å–å¾—
 		fpos = ftell(bcut_mgr.fp);
 
 		bcut_mgr.csize = bcut_mgr.tm2pHead.ClutSize;
@@ -212,13 +212,13 @@ static bool _read_clut(void)
 		char tpath[_MAX_PATH];
 		_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "pal");
 		if (!fileopen(&cfp, tpath, "wb", NULL)) {
-			printf("ƒpƒŒƒbƒg‚ªo—Í‚Å‚«‚Ü‚¹‚ñ\n");
+			printf("ãƒ‘ãƒ¬ãƒƒãƒˆãŒå‡ºåŠ›ã§ãã¾ã›ã‚“\n");
 			return false;
 		}
 		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
 		fclose(cfp);
 
-		// Œ³‚É–ß‚·
+		// å…ƒã«æˆ»ã™
 		fseek(bcut_mgr.fp, fpos, SEEK_SET);
 	} else {
 		bcut_mgr.clut  = NULL;
@@ -234,7 +234,7 @@ static bool _read_clut(void)
 
 
 /*========================================================
-y‹@”\z—]”’íœ
+ã€æ©Ÿèƒ½ã€‘ä½™ç™½å‰Šé™¤
 =========================================================*/
 int main(int argc, char *argv[])
 {

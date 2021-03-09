@@ -2,44 +2,44 @@
 #define _TIM2_H_
 
 typedef struct tagTIM2_FILEHEADER {
-	sint8  FileId[4];		// ƒtƒ@ƒCƒ‹ID('T','I','M','2'ŒÅ’è)
-	uint8  FormatVersion;	// ƒtƒ@ƒCƒ‹ƒtƒH[ƒ}ƒbƒgƒo[ƒWƒ‡ƒ“”Ô†
-	uint8  FormatId;		// ƒtƒH[ƒ}ƒbƒgID
-	uint16 Pictures;		// ƒsƒNƒ`ƒƒƒf[ƒ^‚ÌŒÂ”
-	sint8  Reserved[8];		// ƒpƒfƒBƒ“ƒO(0x00ŒÅ’è)
+	sint8  FileId[4];		// ãƒ•ã‚¡ã‚¤ãƒ«ID('T','I','M','2'å›ºå®š)
+	uint8  FormatVersion;	// ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆãƒãƒ¼ã‚¸ãƒ§ãƒ³ç•ªå·
+	uint8  FormatId;		// ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆID
+	uint16 Pictures;		// ãƒ”ã‚¯ãƒãƒ£ãƒ‡ãƒ¼ã‚¿ã®å€‹æ•°
+	sint8  Reserved[8];		// ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°(0x00å›ºå®š)
 } TIM2_FILEHEADER; //[16byte]
 
 typedef struct tagTIM2_PICTUREHEADER {
-	uint32 TotalSize;		// ƒsƒNƒ`ƒƒƒf[ƒ^‘S‘Ì‚ÌƒoƒCƒgƒTƒCƒY
-	uint32 ClutSize;		// CLUTƒf[ƒ^•”‚ÌƒoƒCƒgƒTƒCƒY
-	uint32 ImageSize;		// ƒCƒ[ƒWƒf[ƒ^•”‚ÌƒoƒCƒgƒTƒCƒY
-	uint16 HeaderSize;		// ƒwƒbƒ_•”‚ÌƒoƒCƒgƒTƒCƒY
-	uint16 ClutColors;		// CLUTƒf[ƒ^•”‚Ìƒg[ƒ^ƒ‹F”
-	uint8  PictFormat;		// ƒsƒNƒ`ƒƒŒ`®ID(0ŒÅ’è)
-	uint8  MipMapTextures;	// MIPMAPƒeƒNƒXƒ`ƒƒ–‡”
-	uint8  ClutType;		// CLUTƒf[ƒ^•”í•Ê
-	uint8  ImageType;		// ƒCƒ[ƒWƒf[ƒ^•”í•Ê
-	uint16 ImageWidth;		// ƒsƒNƒ`ƒƒ‰¡ƒTƒCƒY
-	uint16 ImageHeight;		// ƒsƒNƒ`ƒƒcƒTƒCƒY
-	uint64 GsTex0;			// GS TEX0ƒŒƒWƒXƒ^ƒf[ƒ^
-	uint64 GsTex1;			// GS TEX1ƒŒƒWƒXƒ^ƒf[ƒ^
-	uint32 GsRegs;			// GS TEXA,FBA,PABEƒŒƒWƒXƒ^ƒf[ƒ^
-	uint32 GsTexClut;		// GS TEXCLUTƒŒƒWƒXƒ^ƒf[ƒ^
+	uint32 TotalSize;		// ãƒ”ã‚¯ãƒãƒ£ãƒ‡ãƒ¼ã‚¿å…¨ä½“ã®ãƒã‚¤ãƒˆã‚µã‚¤ã‚º
+	uint32 ClutSize;		// CLUTãƒ‡ãƒ¼ã‚¿éƒ¨ã®ãƒã‚¤ãƒˆã‚µã‚¤ã‚º
+	uint32 ImageSize;		// ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿éƒ¨ã®ãƒã‚¤ãƒˆã‚µã‚¤ã‚º
+	uint16 HeaderSize;		// ãƒ˜ãƒƒãƒ€éƒ¨ã®ãƒã‚¤ãƒˆã‚µã‚¤ã‚º
+	uint16 ClutColors;		// CLUTãƒ‡ãƒ¼ã‚¿éƒ¨ã®ãƒˆãƒ¼ã‚¿ãƒ«è‰²æ•°
+	uint8  PictFormat;		// ãƒ”ã‚¯ãƒãƒ£å½¢å¼ID(0å›ºå®š)
+	uint8  MipMapTextures;	// MIPMAPãƒ†ã‚¯ã‚¹ãƒãƒ£æšæ•°
+	uint8  ClutType;		// CLUTãƒ‡ãƒ¼ã‚¿éƒ¨ç¨®åˆ¥
+	uint8  ImageType;		// ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿éƒ¨ç¨®åˆ¥
+	uint16 ImageWidth;		// ãƒ”ã‚¯ãƒãƒ£æ¨ªã‚µã‚¤ã‚º
+	uint16 ImageHeight;		// ãƒ”ã‚¯ãƒãƒ£ç¸¦ã‚µã‚¤ã‚º
+	uint64 GsTex0;			// GS TEX0ãƒ¬ã‚¸ã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿
+	uint64 GsTex1;			// GS TEX1ãƒ¬ã‚¸ã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿
+	uint32 GsRegs;			// GS TEXA,FBA,PABEãƒ¬ã‚¸ã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿
+	uint32 GsTexClut;		// GS TEXCLUTãƒ¬ã‚¸ã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿
 } TIM2_PICTUREHEADER; //[48byte]
 
 typedef struct {
-	uint64 GsMiptbp1;		// MIPTBP1(64ƒrƒbƒg‚»‚Ì‚Ü‚Ü)
-	uint64 GsMiptbp2;		// MIPTBP2(64ƒrƒbƒg‚»‚Ì‚Ü‚Ü)
-	uint32 MMImageSize[0];	// MIPMAP[?]–‡–Ú‚Ì‰æ‘œƒoƒCƒgƒTƒCƒY
+	uint64 GsMiptbp1;		// MIPTBP1(64ãƒ“ãƒƒãƒˆãã®ã¾ã¾)
+	uint64 GsMiptbp2;		// MIPTBP2(64ãƒ“ãƒƒãƒˆãã®ã¾ã¾)
+	uint32 MMImageSize[0];	// MIPMAP[?]æšç›®ã®ç”»åƒãƒã‚¤ãƒˆã‚µã‚¤ã‚º
 } TIM2_MIPMAPHEADER; //[20byte]
 
 
-// TIM2Šg’£ƒwƒbƒ_
+// TIM2æ‹¡å¼µãƒ˜ãƒƒãƒ€
 typedef struct {
-	uint8  ExHeaderId[4];	// Šg’£ƒRƒƒ“ƒgƒwƒbƒ_ID('e','X','t','\x00')
-	uint32 UserSpaceSize;	// ƒ†[ƒU[ƒXƒy[ƒXƒTƒCƒY
-	uint32 UserDataSize;	// ƒ†[ƒU[ƒf[ƒ^‚ÌƒTƒCƒY
-	uint32 Reserved;		// ƒŠƒU[ƒu
+	uint8  ExHeaderId[4];	// æ‹¡å¼µã‚³ãƒ¡ãƒ³ãƒˆãƒ˜ãƒƒãƒ€ID('e','X','t','\x00')
+	uint32 UserSpaceSize;	// ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚¹ãƒšãƒ¼ã‚¹ã‚µã‚¤ã‚º
+	uint32 UserDataSize;	// ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã®ã‚µã‚¤ã‚º
+	uint32 Reserved;		// ãƒªã‚¶ãƒ¼ãƒ–
 } TIM2_EXHEADER; //[16byte]
 
 #endif

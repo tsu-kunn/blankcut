@@ -2,7 +2,7 @@
 
 
 /*-------------------------------------------------------------------
-y‹@”\zƒoƒCƒiƒŠƒtƒ@ƒCƒ‹•ªŠ„
+ÂyÂ‹@Â”\ÂzÂƒoÂƒCÂƒiÂƒÂŠÂƒtÂƒ@ÂƒCÂƒÂ‹Â•ÅÂŠÂ„
 -------------------------------------------------------------------*/
 int main(int argc, char *argv[])
 {
@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 		printf("bcut.exe Version 1.00                 (c)T.Araki-NOV 4 2004-\n");
 		printf("\n");
 		printf("bcut [cut size] [filename] [output path]\n");
-		printf("cut size    : •ªŠ„ƒTƒCƒY\n");
-		printf("output path : o—Íæ‚ÌƒpƒX(È—ª‚µ‚½ê‡“ü—Í‚Æ“¯‚¶ƒpƒX)\n");
+		printf("cut size    : Â•ÅÂŠÂ„ÂƒTÂƒCÂƒY\n");
+		printf("output path : ÂoÂ—ÃÂÄ‡Â‚ÄšÂƒpÂƒX(ÂÄŒÂ—ÅÂ‚Ä¾Â‚ËÂÄ™ÂÂ‡Â“Ã¼Â—ÃÂ‚Ä†Â“Å»Â‚Å›ÂƒpÂƒX)\n");
 		return 0;
 	}
 

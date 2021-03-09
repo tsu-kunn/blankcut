@@ -1,6 +1,6 @@
 /*=============================================================================
 // Fast 2004/04/01
-// Last 2008/06/24  Ver2.00                                          (c)T.Araki
+// Last 2021/03/09  Ver2.01                                       (c)Tsuyoshi.A
 =============================================================================*/
 #if defined(_NDS) || defined(_PLASTATION2)
 #include "cyn_application.h"
@@ -11,111 +11,114 @@
 #endif
 
 /*-------------------------------------------------------------------
-�@�E�������Ǘ��֐�
-�@�@�ŏ��Ɏg�p���̃������T�C�Y���m�ۂ��A���̒����烁�����̊m�ۂ��s��
-�@�@�v���O�������I������Ƃ��ɉ����1��ōςށA
-�@�@�������Ĕz�u�Ȃǂŗ]���ȏ���������邱�Ƃ��Ȃ��B
+　・メモリ管理関数
+　　最初に使用分のメモリサイズを確保し、その中からメモリの確保を行う
+　　プログラムを終了するときに解放が1回で済む、
+　　メモリ再配置などで余分な処理を取られることがない。
 
-�@�@���Ǘ����A�A���C�����g�����̂��߁A
-�@�@�@���ۂ̍ő�l�͎w���菬�����Ȃ�܂��B
+　　※管理情報、アライメント処理のため、
+　　　実際の最大値は指定より小さくなります。
 
-�@�E�v���O��������
-�@�@memctrl.init()�Ŏw��T�C�Y�̃��������m�ۂ���B
-�@�@���̎�cMEM_ALIGIN�A���C�����g�Ŋm�ۂ���܂��B
+　・プログラム説明
+　　memctrl.init()で指定サイズのメモリを確保する。
+　　この時cMEM_ALIGINアライメントで確保されます。
 
-�@�@�K�v�ȃ�������memctrl.alloc()�Ŏ擾���܂��B
-�@�@���̎��A�w��T�C�Y(�w��A���C�����g�ɂ���Ă̓T�C�Y�ω��L��)
-�@�@�{MemoryLink�����m�ۂ���܂��B
-�@�@(�Ԃ��l��MemoryLink���i�񂾌�̃A�h���X�Ȃ̂ŕ��ʂ͈ӎ����Ȃ���OK)
+　　必要なメモリはmemctrl.alloc()で取得します。
+　　この時、指定サイズ(指定アライメントによってはサイズ変化有り)
+　　＋MemoryLink多く確保されます。
+　　(返す値はMemoryLink分進んだ後のアドレスなので普通は意識しなくてOK)
 
-�@�@�s�v�ɂȂ�����������memctrl.free()�ŉ�����܂��B
+　　不要になったメモリはmemctrl.free()で解放します。
 
-�@�E�X�^�b�N�^�������Ǘ�
-�@�@�X�^�b�N�^�̓�����������m�ۂ��Ă����܂��B
-�@�@stack_alloc()��cMEM_ALIGIN�A���C�����g�T�C�Y+sizeof(uint32)�m�ۂ��܂��B
-�@�@(�Ԃ��l��sizeof(uint32)���i�񂾌�̃A�h���X�Ȃ̂ŕ��ʂ͈ӎ����Ȃ���OK)
+　・スタック型メモリ管理
+　　スタック型はメモリ後方より確保していきます。
+　　stack_alloc()でcMEM_ALIGINアライメントサイズ+sizeof(uint32)確保します。
+　　(返す値はsizeof(uint32)分進んだ後のアドレスなので普通は意識しなくてOK)
 
-�@�@��Ȏd�l�p�r�̓��[�N�������Ȃ̂ŊȒP�ȊǗ������s���܂���B
-�@�@����͊m�ۂ������ԂƋt����memctrl.free()��
-�@�@��C�ɂ��ׂĂ��������stack_reset()�̓��ނ݂̂ł��B
+　　主な仕様用途はワークメモリなので簡単な管理しか行いません。
+　　解放は確保した順番と逆順のmemctrl.free()と
+　　一気にすべてを解放するstack_reset()の二種類のみです。
 
 
-2004/04/26�ύX
-�@�@�X�^�b�N�^���~�߂ă`�F�[���^�ɕύX�B
-�@�@�m�ۂ���ĂɃA�h���X�ƃA�h���X�̋󂫗e�ʂ��`�F�b�N���A
-�@�@�w��T�C�Y�����܂�Ȃ炻���ɑ}������悤�ɂ����B
-�@�@����ɂ��X�^�b�N�^�̌��󂫂��}������悤�ɂȂ����B
-�@�@�������A�f�Љ����i�ނƗe�ʂ������Ă��m�ۂł��Ȃ��Ȃ�̂Œ��ӁB
+2004/04/26変更
+　　スタック型を止めてチェーン型に変更。
+　　確保する再にアドレスとアドレスの空き容量をチェックし、
+　　指定サイズが収まるならそこに挿入するようにした。
+　　これによりスタック型の穴空きが抑えられるようになった。
+　　ただし、断片化が進むと容量があっても確保できなくなるので注意。
 
-2005/02/09�ύX
-�@�@�������̊m�ې��̃`�F�b�N���s���悤�ɂ����B
-�@�@����ɂ�胁�����Ǘ����̃��������[�N�𑽏����o���₷���Ȃ�B
-�@�@define:memalloc��ǉ��B
+2005/02/09変更
+　　メモリの確保数のチェックを行うようにした。
+　　これによりメモリ管理内のメモリリークを多少検出しやすくなる。
+　　define:memallocを追加。
 
-2005/10/27�ύX
-�@�@����A�g���r���[�g�Areset�֐��ǉ��B
-�@�@�A���C�����g���w�肵�Ċm�ۂ�allocEx�ɕύX�B
-�@�@NDS��p�̊֐��ǉ����A���P�[�^�[�ɑΉ��B
+2005/10/27変更
+　　解放アトリビュート、reset関数追加。
+　　アライメントを指定して確保をallocExに変更。
+　　NDS専用の関数追加＆アロケーターに対応。
 
-2005/11/01�ǉ�
-�@�@�X�^�b�N�^�̃������Ǘ��@�\�ǉ��B
+2005/11/01追加
+　　スタック型のメモリ管理機能追加。
 
-2006/06/23�ύX
-�@�@���A�h���X��ݒ�A���C�����g�ɍ��킹�A�m�ۂ��郁������
-�@�@�ݒ�A���C�����g�P�ʂŊm�ۂ���悤�ɕύX�B(��psrc�ǉ�)
-�@�@����ɂƂ��Ȃ�allocEx���폜�B
+2006/06/23変更
+　　元アドレスを設定アライメントに合わせ、確保するメモリは
+　　設定アライメント単位で確保するように変更。(→psrc追加)
+　　これにともないallocExを削除。
 
 2006/09/08
-�@�@Warning�������C���B
+　　Warning部分を修正。
 
 2006/09/12
-�@�@����������Ƃ����荞�݂��֎~�ɂ����B�iDS����)
+　　処理をするとき割り込みを禁止にした。（DS処理)
 
 2006/09/29
-�@�@stack_alloc�̊m�ۃT�C�Y�o�E���f�B���O���ɂ�
-�@�@�w�b�_�[�T�C�Y���܂߂Ă��Ȃ������_���C���B
+　　stack_allocの確保サイズバウンディング時にに
+　　ヘッダーサイズを含めていなかった点を修正。
 
 2006/10/31
-�@�@�F���w�b�_�[��ǉ����ĉ�������𓝈�B
-�@�@���̍�ƂɂƂ��Ȃ�StackHeader��ID��ǉ��B
-�@�@����ɂƂ��Ȃ�stack_free���폜�B
+　　認識ヘッダーを追加して解放処理を統一。
+　　この作業にともないStackHeaderやIDを追加。
+　　これにともないstack_freeを削除。
 
 2006/11/07
-�@�@�f�o�b�O�o�͐ݒ���s���f�o�b�O�֐��ǉ��B
+　　デバッグ出力設定を行うデバッグ関数追加。
 
 2007/01/20
-�@�@reset()�ŃX�^�b�N�����������Z�b�g���Ă��Ȃ������_���C���B
-�@�@���������[�N�������Ԃ�release()���Ă񂾏ꍇ�A
-�@�@���[�N�T�C�Y���o�͂���悤�ɂ����B
+　　reset()でスタックメモリをリセットしていなかった点を修正。
+　　メモリリークがある状態でrelease()を呼んだ場合、
+　　リークサイズを出力するようにした。
 
 2007/10/17
-�@�@���Ŋm�ۂ������������珉�����ł���悤initEx�֐���ǉ��B
-�@�@�������̏I�[�A�h���X�ݒ�Ńo�O���������̂��C���B
+　　他で確保したメモリから初期化できるようinitEx関数を追加。
+　　初期化の終端アドレス設定でバグがあったのを修正。
 
 2008/01/11
-�@�@DS��C++�Ή��ɂƂ��Ȃ��G���[�C���B
+　　DSのC++対応にともなうエラー修正。
 
 2008/06/04
-�@�@mem_mgr.stack�̊J�n�A�h���X���w��A���C�����g��
-�@�@�Ȃ��Ă��Ȃ������s����C���B
-�@�@�Ǘ��pMemoryLink��attr�����ݒ肾�����s����C���B
-�@�@����ɂƂ��Ȃ��ueMEM_SYSTEM�v��ǉ��B
+　　mem_mgr.stackの開始アドレスが指定アライメントに
+　　なっていなかった不具合を修正。
+　　管理用MemoryLinkのattrが未設定だった不具合を修正。
+　　これにともない「eMEM_SYSTEM」を追加。
 
 2008/06/24
-�@�@mtolib�쐬�ɍ��킹�ăt�@�C�����ύX�B
-�@�@����ɉ����ăo�[�W������2.00�ɕύX�B
-�@�@��{��C++�Ή������ǁAmtolib�ł�C����ō쐬�B
+　　mtolib作成に合わせてファイル名変更。
+　　それに応じてバージョンを2.00に変更。
+　　基本はC++対応だけど、mtolibではC言語で作成。
+
+2021/03/09
+　　文字コードをshift jisからUTF-8に変更。
 -------------------------------------------------------------------*/
 typedef struct tagMemoryLink {
-	void  *next;		// ���̃����N�A�h���X
-	uint32 head;		// ���ʃw�b�_�[�i�Œ�j
-	uint32 size;		// �m�ۃ������T�C�Y
-	uint32 attr;		// ����A�g���r���[�g
+	void  *next;		// 次のリンクアドレス
+	uint32 head;		// 識別ヘッダー（固定）
+	uint32 size;		// 確保メモリサイズ
+	uint32 attr;		// 解放アトリビュート
 } MemoryLink;
 
 typedef struct tagStackHeader {
-	uint32 size;		// �m�ۃ������T�C�Y
-	uint32 head;		// �F���w�b�_�[�i�Œ�j
+	uint32 size;		// 確保メモリサイズ
+	uint32 head;		// 認識ヘッダー（固定）
 } StatckHeader;
 
 #define LINK_SIZE		(BOUND(sizeof(MemoryLink), cMEM_ALIGIN))
@@ -125,20 +128,20 @@ typedef struct tagStackHeader {
 
 
 typedef struct tagMemoryManager {
-	uint8  *psrc;		// ���A�h���X
-	uint8  *addr;		// �A���C�����g��̃A�h���X
-	uint8  *pos;		// ���݂̃A�h���X
-	uint8  *end;		// �I�[�A�h���X
-	uint8  *stack;		// �X�^�b�N�̃A�h���X
+	uint8  *psrc;		// 元アドレス
+	uint8  *addr;		// アライメント後のアドレス
+	uint8  *pos;		// 現在のアドレス
+	uint8  *end;		// 終端アドレス
+	uint8  *stack;		// スタックのアドレス
 
-	uint32 size;		// �������T�C�Y
-	sint32 mnum;		// �������m�ې�
-	MemoryLink *link;	// �����N�p�\����
+	uint32 size;		// メモリサイズ
+	sint32 mnum;		// メモリ確保数
+	MemoryLink *link;	// リンク用構造体
 
-	sint32 ex_flg;		// initEx�ŏ������H
+	sint32 ex_flg;		// initExで初期化？
 
 #ifndef NDEBUG
-	sint32 dbgmsg;		// �f�o�b�O���b�Z�[�W�o�́H
+	sint32 dbgmsg;		// デバッグメッセージ出力？
 #endif
 
 #ifdef _NDS
@@ -162,8 +165,8 @@ static MemoryManager mem_mgr;
 
 
 /*-------------------------------------------------------------------
-�y�@�\�z�f�o�b�O���b�Z�[�W�o�͐ݒ�
-�y�����zdbgmsg�F�o�́H
+【機能】デバッグメッセージ出力設定
+【引数】dbgmsg：出力？
 -------------------------------------------------------------------*/
 static void _memory_set_dbgmsg(const sint32 dbgmsg)
 {
@@ -175,15 +178,15 @@ static void _memory_set_dbgmsg(const sint32 dbgmsg)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z�������`�F�b�N
-�y���l�z���������K��͈͓��ɂ��邩���`�F�b�N�i�͈͊O�͒�~�j
+【機能】メモリチェック
+【備考】メモリが規定範囲内にあるかをチェック（範囲外は停止）
 -------------------------------------------------------------------*/
 static void _memory_memory_check(const void *cmem)
 {
 	uint8 *mem = (uint8*)cmem;
 	MemoryLink *link = (MemoryLink*)cmem;
 
-	// NULL�Ȃ�`�F�b�N���Ȃ�
+	// NULLならチェックしない
 	if (cmem == NULL) return;
 
 	if (mem < mem_mgr.addr || mem > mem_mgr.pos || (uint8*)link->next > mem_mgr.pos || (link->next != NULL && mem > (uint8*)link->next))
@@ -195,20 +198,20 @@ static void _memory_memory_check(const void *cmem)
 		{
 			char str[256];
 			memset(str, 0, sizeof(str));
-			sprintf(str, "�w�胁�������s���ł�\ncmem:0x%x\naddr:0x%x\nend :0x%x",
+			sprintf(str, "指定メモリが不正です\ncmem:0x%x\naddr:0x%x\nend :0x%x",
 					(uint32)cmem, (uint32)mem_mgr.addr, (uint32)mem_mgr.end);
-			// Windows�Ȃ�G���[�\�L
+			// Windowsならエラー表記
 			MessageBox(NULL, str, "Error", MB_ICONERROR | MB_OK);
 		}
 #endif
-		while (1); // �������[�v�Ŏ~�߂�
+		while (1); // 無限ループで止める
 #endif
 	}
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z������������
-�y�����zsize:�������m�ۃT�C�Y
+【機能】メモリ初期化
+【引数】size:メモリ確保サイズ
 -------------------------------------------------------------------*/
 static sint32 _memory_init(const uint32 size)
 {
@@ -239,7 +242,7 @@ static sint32 _memory_init(const uint32 size)
 	mem_mgr.link->attr = eMEM_SYSTEM;
 	mem_mgr.ex_flg = FALSE;
 
-	// stack_alloc�̊J�n�ʒu���w��A���C�����g�ɂȂ�悤�ɒ���
+	// stack_allocの開始位置が指定アライメントになるように調整
 	stack_size = BOUND(mem_mgr.end, cMEM_ALIGIN);
 	if ((uint32)mem_mgr.end != stack_size) {
 		mem_mgr.stack = (uint8*)(stack_size - cMEM_ALIGIN);
@@ -256,9 +259,9 @@ static sint32 _memory_init(const uint32 size)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z���Ŋm�ۂ����������ŏ�����
-�y�����zaddr:�������A�h���X
-        size:�������T�C�Y
+【機能】他で確保したメモリで初期化
+【引数】addr:メモリアドレス
+        size:メモリサイズ
 -------------------------------------------------------------------*/
 static sint32 _memory_initEx(void *addr, const uint32 size)
 {
@@ -284,7 +287,7 @@ static sint32 _memory_initEx(void *addr, const uint32 size)
 	mem_mgr.link->attr = eMEM_SYSTEM;
 	mem_mgr.ex_flg = TRUE;
 
-	// stack_alloc�̊J�n�ʒu���w��A���C�����g�ɂȂ�悤�ɒ���
+	// stack_allocの開始位置が指定アライメントになるように調整
 	stack_size = BOUND(mem_mgr.end, cMEM_ALIGIN);
 	if ((uint32)mem_mgr.end != stack_size) {
 		mem_mgr.stack = (uint8*)(stack_size - cMEM_ALIGIN);
@@ -296,11 +299,11 @@ static sint32 _memory_initEx(void *addr, const uint32 size)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z�������m��
-�y�����zsize  :�m�ۃT�C�Y
-�@�@�@�@attr  :����A�g���r���[�g
-�y���l�zcMEM_ALIGIN�A���C�����g�Œ�B
-        LINK_SIZE�����m�ۂ��A������MemoryLink�𖄂ߍ���
+【機能】メモリ確保
+【引数】size  :確保サイズ
+　　　　attr  :解放アトリビュート
+【備考】cMEM_ALIGINアライメント固定。
+        LINK_SIZE多く確保し、そこにMemoryLinkを埋め込む
 -------------------------------------------------------------------*/
 static void *_memory_alloc(uint32 size, const uint32 attr)
 {
@@ -318,16 +321,16 @@ static void *_memory_alloc(uint32 size, const uint32 attr)
 	DBG_ASSERT(attr <= eMEM_UNLOCK, "attrib error!!");
 #endif
 
-	// �w��A���C�����g�P�ʂŊm��
+	// 指定アライメント単位で確保
 	size = BOUND(size, cMEM_ALIGIN) + LINK_SIZE;
 
-	// �󂢂Ă���ʒu��T��
+	// 空いている位置を探す
 	mlink = mem_mgr.link;
 	while (mlink != NULL) {
-		if (mlink->next == NULL) break; // �I�[
+		if (mlink->next == NULL) break; // 終端
 
 		mfree = (uint32)mlink->next - ((uint32)mlink + mlink->size);
-		if (size <= mfree) { // �󂫔���
+		if (size <= mfree) { // 空き発見
 			// save next link addres
 			tlink = (MemoryLink*)mlink->next;
 			mem   = (uint8*)mlink + mlink->size;
@@ -356,7 +359,7 @@ static void *_memory_alloc(uint32 size, const uint32 attr)
 		_memory_memory_check(mlink);
 	}
 
-	// �V�K�m��
+	// 新規確保
 	// memory free ok?
 	if ((uint32)(mem_mgr.stack - mem_mgr.pos) < size) {
 #ifndef NDEBUG
@@ -400,8 +403,8 @@ static void *_memory_alloc(uint32 size, const uint32 attr)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z���������
-�y�����zaddr:�������A�h���X
+【機能】メモリ解放
+【引数】addr:メモリアドレス
 -------------------------------------------------------------------*/
 static sint32 _memory_free(const void *addr)
 {
@@ -423,7 +426,7 @@ static sint32 _memory_free(const void *addr)
 		old = OS_DisableInterrupts();
 #endif
 
-		// �m�ۃT�C�Y�擾
+		// 確保サイズ取得
 		size = *((uint32*)((uint8*)addr - STACK_SIZE));
 		mem_mgr.stack += size;
 
@@ -450,7 +453,7 @@ static sint32 _memory_free(const void *addr)
 	mlink = mem_mgr.link;
 	while (mlink != NULL) {
 		if (slink == mlink->next) {
-			if (slink->next == NULL) { // it end�H
+			if (slink->next == NULL) { // it end？
 				mem_mgr.pos = (uint8*)mlink + mlink->size;
 			}
 			mlink->next = (MemoryLink*)slink->next;
@@ -492,20 +495,20 @@ static sint32 _memory_free(const void *addr)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z�������̋󂫗e��
+【機能】メモリの空き容量
 -------------------------------------------------------------------*/
 static uint32 _memory_get_quantity(void)
 {
 	uint32 mfree;
 	MemoryLink *mlink;
 
-	// ��{
+	// 基本
 	mfree = (uint32)(mem_mgr.stack - mem_mgr.pos);
 
-	// �Ԃɂ���󂫂����Z
+	// 間にある空きを加算
 	mlink = mem_mgr.link;
 	while (mlink != NULL) {
-		if (mlink->next == NULL) break; // �I�[
+		if (mlink->next == NULL) break; // 終端
 		mfree += (uint32)mlink->next - ((uint32)mlink + mlink->size);
 		mlink = (MemoryLink*)mlink->next;
 	}
@@ -514,20 +517,20 @@ static uint32 _memory_get_quantity(void)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z�f�Љ������������̋󂫗e��
+【機能】断片化したメモリの空き容量
 -------------------------------------------------------------------*/
 static uint32 _memory_get_fragment(void)
 {
 	uint32 mfree;
 	MemoryLink *mlink;
 
-	// ��{
+	// 基本
 	mfree = 0;
 
-	// �Ԃɂ���󂫂����Z
+	// 間にある空きを加算
 	mlink = mem_mgr.link;
 	while (mlink != NULL) {
-		if (mlink->next == NULL) break; // �I�[
+		if (mlink->next == NULL) break; // 終端
 		mfree += (uint32)mlink->next - ((uint32)mlink + mlink->size);
 		mlink = (MemoryLink*)mlink->next;
 	}
@@ -536,9 +539,9 @@ static uint32 _memory_get_fragment(void)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�zeMEM_UNLOCK���������
-�y���l�z���̊֐���ǂ񂾌�A���ɉ������Ă���A�h���X��free���ĂԂ�
-�@�@�@�@Error�ɂȂ�̂Œ��ӁB�i�������l�����j
+【機能】eMEM_UNLOCKメモリ解放
+【備考】この関数を読んだ後、既に解放されているアドレスでfreeを呼ぶと
+　　　　Errorになるので注意。（回避策を考え中）
 -------------------------------------------------------------------*/
 static void _memory_reset(void)
 {
@@ -555,7 +558,7 @@ static void _memory_reset(void)
 	// serch attrib eMEM_UNLOCK
 	while (mlink != NULL && slink != NULL) {
 		if (slink->attr == eMEM_UNLOCK) {
-			if (slink->next == NULL) { // it end�H
+			if (slink->next == NULL) { // it end？
 				mem_mgr.pos = (uint8*)mlink + mlink->size;
 			}
 			mlink->next = (MemoryLink*)slink->next;
@@ -576,7 +579,7 @@ static void _memory_reset(void)
 		}
 	}
 
-	// �X�^�b�N���������Z�b�g
+	// スタックメモリリセット
 	mem_mgr.stack = mem_mgr.end;
 
 #ifdef _NDS
@@ -586,7 +589,7 @@ static void _memory_reset(void)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z���������
+【機能】メモリ解放
 -------------------------------------------------------------------*/
 static void _memory_release(void)
 {
@@ -638,8 +641,8 @@ static void _memory_release(void)
 
 
 /*-------------------------------------------------------------------
-�y�@�\�z�X�^�b�N�������m��
-�y�����zsize  :�m�ۃT�C�Y
+【機能】スタックメモリ確保
+【引数】size  :確保サイズ
 -------------------------------------------------------------------*/
 static void *_memory_stack_alloc(uint32 size)
 {
@@ -650,10 +653,10 @@ static void *_memory_stack_alloc(uint32 size)
 	OSIntrMode old = OS_DisableInterrupts();
 #endif
 
-	// �w��A���C�����g�P�ʂŊm��
+	// 指定アライメント単位で確保
 	size = BOUND(size, cMEM_ALIGIN) + STACK_SIZE;
 
-	// �������m�ۉ\�H
+	// メモリ確保可能？
 	if (((uint32)mem_mgr.stack - size) > (uint32)mem_mgr.pos) {
 		mem_mgr.stack -= size;
 		stack = (StatckHeader*)mem_mgr.stack;
@@ -671,9 +674,9 @@ static void *_memory_stack_alloc(uint32 size)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�z�X�^�b�N���������Z�b�g
-�y���l�z�X�^�b�N�ʒu�������ʒu�ɖ߂��܂��̂ŁA
-�@�@�@�@���Ɋm�ۂ����������͎g�p���Ȃ���stack_free()�ɓn���Ȃ�����!!
+【機能】スタックメモリリセット
+【備考】スタック位置を初期位置に戻しますので、
+　　　　既に確保したメモリは使用しない＆stack_free()に渡さないこと!!
 -------------------------------------------------------------------*/
 static void _memory_stack_rest(void)
 {
@@ -695,7 +698,7 @@ static void _memory_stack_rest(void)
 
 #ifdef _NDS
 /*-------------------------------------------------------------------
-�y�@�\�zNDS�p�������m��
+【機能】NDS用メモリ確保
 -------------------------------------------------------------------*/
 static void *_memory_nds_alloc(NNSFndAllocator *pAllocator, uint32 size)
 {
@@ -704,7 +707,7 @@ static void *_memory_nds_alloc(NNSFndAllocator *pAllocator, uint32 size)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�zNDS�p���������
+【機能】NDS用メモリ解放
 -------------------------------------------------------------------*/
 static void _memory_nds_free(NNSFndAllocator *pAllocator, void *addr)
 {
@@ -713,7 +716,7 @@ static void _memory_nds_free(NNSFndAllocator *pAllocator, void *addr)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�zNDS�p������������
+【機能】NDS用メモリ初期化
 -------------------------------------------------------------------*/
 static sint32 _memory_nds_init(void)
 {
@@ -754,8 +757,8 @@ static sint32 _memory_nds_init(void)
 	mem_mgr.allocator.heapParam1 = (u32)cMEM_ALIGIN;
 	mem_mgr.allocator.heapParam2 = 0; // no use
 
-	// �������Ǘ��}�l�[�W���[������
-	mem_mgr.addr  = mem_mgr.psrc; // �A���C�����g����Ă���
+	// メモリ管理マネージャー初期化
+	mem_mgr.addr  = mem_mgr.psrc; // アライメントされている
 	mem_mgr.pos   = mem_mgr.addr + LINK_SIZE;
 	mem_mgr.end   = mem_mgr.psrc + heapSize;
 	mem_mgr.size  = heapSize;
@@ -763,7 +766,7 @@ static sint32 _memory_nds_init(void)
 	mem_mgr.link->next = NULL;
 	mem_mgr.link->size = LINK_SIZE;
 
-	// stack_alloc�̊J�n�ʒu���w��A���C�����g�ɂȂ�悤�ɒ���
+	// stack_allocの開始位置が指定アライメントになるように調整
 	stack_size = BOUND(mem_mgr.end, cMEM_ALIGIN);
 	if ((uint32)mem_mgr.end != stack_size) {
 		mem_mgr.stack = (uint8*)(stack_size - cMEM_ALIGIN);
@@ -775,7 +778,7 @@ static sint32 _memory_nds_init(void)
 }
 
 /*-------------------------------------------------------------------
-�y�@�\�zNDS�p�A���P�[�^�[�\���̎擾
+【機能】NDS用アロケーター構造体取得
 -------------------------------------------------------------------*/
 static NNSFndAllocator _memory_nds_get_allocator(NNSFndAllocator *pAllocator)
 {

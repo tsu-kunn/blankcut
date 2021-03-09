@@ -1,34 +1,34 @@
 #include "mto_common.h"
 
 typedef struct tagCompManager {
-	uint32 list;	// ƒŠƒXƒg‚Ìƒtƒ@ƒCƒ‹”
+	uint32 list;	// ãƒªã‚¹ãƒˆã®ãƒ•ã‚¡ã‚¤ãƒ«æ•°
 
-	uint16 name;	//–¼‘O‚Ì”
+	uint16 name;	//åå‰ã®æ•°
 	uint16 pad16;
 } CompManager;
 
 static CompManager comp_mgr;
 
 /*========================================================
-y‹@”\z‘€ìà–¾
+ã€æ©Ÿèƒ½ã€‘æ“ä½œèª¬æ˜
 =========================================================*/
 void info_draw(void)
 {
-	printf("•¡‡ƒc[ƒ‹@by.T.A\n");
+	printf("è¤‡åˆãƒ„ãƒ¼ãƒ«ã€€by.T.A\n");
 	printf("comb [option] <out file> <list file>\n");
-	printf("       -c : ƒtƒ@ƒCƒ‹‚Ì’Ç‰ÁŒ‹‡\n");
-	printf("       -n : –¼‘O‚Ì”‚ğ”‚¦‚é\n");
-	printf("       -s : ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ“¾‚é\n");
-	printf("       -t0 : -n‚Åì¬‚³‚ê‚½ƒŠƒXƒg‚©‚çƒe[ƒuƒ‹ì¬\n");
-	printf("       @1 : -s‚Åì¬‚³‚ê‚½ƒŠƒXƒg‚©‚çƒe[ƒuƒ‹ì¬\n");
+	printf("       -c : ãƒ•ã‚¡ã‚¤ãƒ«ã®è¿½åŠ çµåˆ\n");
+	printf("       -n : åå‰ã®æ•°ã‚’æ•°ãˆã‚‹\n");
+	printf("       -s : ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹\n");
+	printf("       -t0 : -nã§ä½œæˆã•ã‚ŒãŸãƒªã‚¹ãƒˆã‹ã‚‰ãƒ†ãƒ¼ãƒ–ãƒ«ä½œæˆ\n");
+	printf("       ã€€1 : -sã§ä½œæˆã•ã‚ŒãŸãƒªã‚¹ãƒˆã‹ã‚‰ãƒ†ãƒ¼ãƒ–ãƒ«ä½œæˆ\n");
 }
 
 /*========================================================
-y‹@”\zƒIƒvƒVƒ‡ƒ“‚Ì—L–³‚ğ’²‚×‚é
+ã€æ©Ÿèƒ½ã€‘ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®æœ‰ç„¡ã‚’èª¿ã¹ã‚‹
 =========================================================*/
 void check_option(int argc, char *argv[])
 {
-	//ƒIƒvƒVƒ‡ƒ“‚ª‚ ‚éH
+	//ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ï¼Ÿ
 	if (argv[1][0] == '-') {
 		switch (argv[1][1]) {
 			case 'c': case 'C':
@@ -43,7 +43,7 @@ void check_option(int argc, char *argv[])
 					case '1':
 						break;
 					default:
-						printf("-t0 -t1 ‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢\n");
+						printf("-t0 -t1 ã‚’æŒ‡å®šã—ã¦ãã ã•ã„\n");
 						exit(0);
 						break;
 				}
@@ -53,8 +53,8 @@ void check_option(int argc, char *argv[])
 				exit(0);
 				break;
 			default:
-				printf("ƒTƒ|[ƒg‚³‚ê‚Ä‚¢‚È‚¢Šg’£q‚Å‚·\n");
-				printf("wcompbx‚Ü‚½‚Íwcompb -hx‚Åƒwƒ‹ƒv\n");
+				printf("ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¦ã„ãªã„æ‹¡å¼µå­ã§ã™\n");
+				printf("ã€compbã€ã¾ãŸã¯ã€compb -hã€ã§ãƒ˜ãƒ«ãƒ—\n");
 				exit(0);
 				break;
 		}
@@ -62,33 +62,33 @@ void check_option(int argc, char *argv[])
 		info_draw();
 	}
 
-	//ƒIƒvƒVƒ‡ƒ“‚Íˆê‚Â‚¾‚¯
+	//ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ä¸€ã¤ã ã‘
 	if (argv[2][0] == '-') {
-		printf("ƒIƒvƒVƒ‡ƒ“‚ª‘½‚·‚¬‚Å‚·\n");
+		printf("ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒå¤šã™ãã§ã™\n");
 		exit(1);
 	}
 }
 
 /*========================================================
-y‹@”\zƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+ã€æ©Ÿèƒ½ã€‘ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 =========================================================*/
 void *f_read(char *fName, uint32 *size)
 {
 	FILE *fp;
 	void *mem;
 	
-	//ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³
 	if ((fp = fopen(fName, "rb")) == NULL) {
-		printf("%sƒtƒ@ƒCƒ‹‚ª‚ ‚è‚Ü‚¹‚ñ\n", fName);
+		printf("%sãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“\n", fName);
 		return NULL;
 	}
 	
-	//ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ’²‚×‚é
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã‚‹
 	fseek(fp, 0, SEEK_END);
 	*size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	//ƒtƒ@ƒCƒ‹‚ğƒƒ‚ƒŠ‚ÉˆêŠ‡“Ç‚İ‚İ
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ¡ãƒ¢ãƒªã«ä¸€æ‹¬èª­ã¿è¾¼ã¿
 	if ((mem = malloc(*size)) == NULL) {
 		printf("Can't Create Memory!\n");
 		fclose(fp);
@@ -101,9 +101,9 @@ void *f_read(char *fName, uint32 *size)
 }
 
 /*========================================================
-y‹@”\zƒtƒ@ƒCƒ‹–¼æ“¾
-yˆø”zsnameFƒtƒ@ƒCƒ‹–¼•Û‘¶æ
-@@@@path Fƒtƒ‹ƒpƒX
+ã€æ©Ÿèƒ½ã€‘ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
+ã€å¼•æ•°ã€‘snameï¼šãƒ•ã‚¡ã‚¤ãƒ«åä¿å­˜å…ˆ
+ã€€ã€€ã€€ã€€path ï¼šãƒ•ãƒ«ãƒ‘ã‚¹
 =========================================================*/
 static void get_filename(char *sname, char *path)
 {
@@ -113,9 +113,9 @@ static void get_filename(char *sname, char *path)
 }
 
 /*========================================================
-y‹@”\zƒŠƒXƒgƒtƒ@ƒCƒ‹‚©‚çƒtƒ@ƒCƒ‹–¼æ“¾
-yˆø”zfnameFƒŠƒXƒgƒtƒ@ƒCƒ‹–¼
-@@@@num@F‰½”Ô–Ú‚ğæ“¾‚·‚é‚©
+ã€æ©Ÿèƒ½ã€‘ãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
+ã€å¼•æ•°ã€‘fnameï¼šãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«å
+ã€€ã€€ã€€ã€€numã€€ï¼šä½•ç•ªç›®ã‚’å–å¾—ã™ã‚‹ã‹
 =========================================================*/
 char *getFileName(char *fname, uint16 num)
 {
@@ -126,11 +126,11 @@ char *getFileName(char *fname, uint16 num)
 	buf = (uint8*)calloc(256, sizeof(uint8));
 
 	if ((mem = f_read(fname, &size)) == NULL) {
-		printf("ƒŠƒXƒgƒtƒ@ƒCƒ‹‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ\n");
+		printf("ãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“\n");
 		return NULL;
 	}
 
-	// w’è•ªi‚ß‚é
+	// æŒ‡å®šåˆ†é€²ã‚ã‚‹
 	for (i = 0; i < num; i++) {
 		do {
 			if (cnt >= size) {
@@ -141,7 +141,7 @@ char *getFileName(char *fname, uint16 num)
 		cnt++;
 	}
 
-	// ƒtƒ@ƒCƒ‹–¼æ“¾
+	// ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
 	i = 0;
 	do {
 		i++;
@@ -150,7 +150,7 @@ char *getFileName(char *fname, uint16 num)
 			return NULL;
 		}
 	} while (mem[cnt + i] != '\n');
-	memcpy(buf, &mem[cnt], (i - 1)); // ‰üsè‘O‚Ü‚Å
+	memcpy(buf, &mem[cnt], (i - 1)); // æ”¹è¡Œæ‰‹å‰ã¾ã§
 
 	FREE(mem);
 
@@ -158,8 +158,8 @@ char *getFileName(char *fname, uint16 num)
 }
 
 /*========================================================
-y‹@”\zƒŠƒXƒgƒtƒ@ƒCƒ‹‚©‚çƒtƒ@ƒCƒ‹”æ“¾
-yˆø”zfnameFƒŠƒXƒgƒtƒ@ƒCƒ‹–¼
+ã€æ©Ÿèƒ½ã€‘ãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«æ•°å–å¾—
+ã€å¼•æ•°ã€‘fnameï¼šãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«å
 =========================================================*/
 uint32 getFileNum(char *fname)
 {
@@ -168,11 +168,11 @@ uint32 getFileNum(char *fname)
 
 	cnt = num = size = 0;
 	if ((mem = f_read(fname, &size)) == NULL) {
-		printf("ƒŠƒXƒgƒtƒ@ƒCƒ‹‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ\n");
+		printf("ãƒªã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“\n");
 		return -1;
 	}
 
-	// ”æ“¾
+	// æ•°å–å¾—
 	do {
 		if (mem[cnt] == '\n' ) {
 			num++;
@@ -185,7 +185,7 @@ uint32 getFileNum(char *fname)
 }
 
 /*========================================================
-y‹@”\z–¼‘O‚Ì”‚ğ’²‚×‚é(">"‚ğ’T‚·)
+ã€æ©Ÿèƒ½ã€‘åå‰ã®æ•°ã‚’èª¿ã¹ã‚‹(">"ã‚’æ¢ã™)
 =========================================================*/
 void name_count(FILE *fp, int argc, char *argv[])
 {
@@ -194,10 +194,10 @@ void name_count(FILE *fp, int argc, char *argv[])
 	uint32 cnt = 0, size;
 
 	for (i = 0; i < comp_mgr.list; i++) {
-		// ƒtƒ@ƒCƒ‹–¼æ“¾
+		// ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
 		if ((fname = getFileName(argv[3], (uint16)i)) == NULL) {
 			FREE(fname);
-			printf("ƒŠƒXƒg‚©‚çƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+			printf("ãƒªã‚¹ãƒˆã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 			return;
 		}
 
@@ -207,7 +207,7 @@ void name_count(FILE *fp, int argc, char *argv[])
 			return;
 		}
 
-		//”‚ğ”‚¦‚é
+		//æ•°ã‚’æ•°ãˆã‚‹
 		do {
 			if (mem[cnt] == '>') {
 				comp_mgr.name++;
@@ -215,7 +215,7 @@ void name_count(FILE *fp, int argc, char *argv[])
 			cnt++;
 		} while (cnt < size);
 
-		//˜AŒ‹ƒtƒ@ƒCƒ‹‚É‘‚«‚İ
+		//é€£çµãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã¿
 		printf("%s:%d\n", fname, comp_mgr.name);
 		fprintf(fp, "%s:%d\n", fname, comp_mgr.name);
 
@@ -228,7 +228,7 @@ void name_count(FILE *fp, int argc, char *argv[])
 }
 
 /*========================================================
-y‹@”\zƒtƒ@ƒCƒ‹ƒTƒCƒY‚ğ’²‚×‚é
+ã€æ©Ÿèƒ½ã€‘ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã‚’èª¿ã¹ã‚‹
 =========================================================*/
 void file_size(FILE *fp, int argc, char *argv[])
 {
@@ -237,21 +237,21 @@ void file_size(FILE *fp, int argc, char *argv[])
 	uint32 size;
 
 	for (i = 0; i < comp_mgr.list; i++) {
-		// ƒtƒ@ƒCƒ‹–¼æ“¾
+		// ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
 		if ((fname = getFileName(argv[3], (uint16)i)) == NULL) {
 			FREE(fname);
-			printf("ƒŠƒXƒg‚©‚çƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+			printf("ãƒªã‚¹ãƒˆã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 			return;
 		}
 
-		// ƒtƒ@ƒCƒ‹ƒTƒCƒY‚Ìæ“¾
+		// ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã®å–å¾—
 		mem = (uint8*)f_read(fname, &size);
 		if (mem == NULL) {
 			FREE(fname);
 			return;
 		}
 
-		//˜AŒ‹ƒtƒ@ƒCƒ‹‚É‘‚«‚İ
+		//é€£çµãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã¿
 		printf("%s:0x%x\n", fname, size);
 		fprintf(fp, "%s:%d\n", fname, size);
 
@@ -261,7 +261,7 @@ void file_size(FILE *fp, int argc, char *argv[])
 }
 
 /*========================================================
-y‹@”\zo—Í‚³‚ê‚½–¼‘O‚Ì”‚©‚çƒe[ƒuƒ‹ì¬
+ã€æ©Ÿèƒ½ã€‘å‡ºåŠ›ã•ã‚ŒãŸåå‰ã®æ•°ã‹ã‚‰ãƒ†ãƒ¼ãƒ–ãƒ«ä½œæˆ
 =========================================================*/
 void name_table(FILE *fp, char *argv[], uint8 type)
 {
@@ -283,37 +283,37 @@ void name_table(FILE *fp, char *argv[], uint8 type)
 	get_filename(tname, argv[2]);
 	fprintf(fp, "static const unsigned int %s[] = {\n", tname);
 
-	//”‚ğ”‚¦‚é
+	//æ•°ã‚’æ•°ãˆã‚‹
 	total = cfile = 0;
 	cnt   = ncnt  = 0;
 	do {
 		if (mem[cnt] == ':') {
-			//–¼‘O‚Ìæ“¾
+			//åå‰ã®å–å¾—
 			memset(str, 0, sizeof(str));
 			memcpy(str, &mem[ncnt], (cnt - ncnt));
-			//:‚ÌŸ‚ÌˆÊ’u‚ğ•Û‘¶
+			//:ã®æ¬¡ã®ä½ç½®ã‚’ä¿å­˜
 			scnt = cnt + 1;
 		}
 
 		if (mem[cnt] == '\n') {
-			//”‚Ìæ“¾
+			//æ•°ã®å–å¾—
 			memset(buf, 0, sizeof(buf));
 			memcpy(buf, &mem[scnt], (cnt - scnt));
 
-			//•¶š—ñ‚©‚ç®”’l‚É•ÏŠ·
+			//æ–‡å­—åˆ—ã‹ã‚‰æ•´æ•°å€¤ã«å¤‰æ›
 			name = atoi(buf);
 
-			//ƒtƒ@ƒCƒ‹‘‚«o‚µ
+			//ãƒ•ã‚¡ã‚¤ãƒ«æ›¸ãå‡ºã—
 			if (type == 0) {
 				fprintf(fp, "\t%6d,\t\t // %s(%d - %d)\n", total, str, total, (total + name - 1));
 			} else {
 				fprintf(fp, "\t%#08x,\t\t// %s\n", name, str);
 			}
 
-			//ƒg[ƒ^ƒ‹ŒvZ
+			//ãƒˆãƒ¼ã‚¿ãƒ«è¨ˆç®—
 			total += atoi(buf);
 
-			//Ÿ‚Ìæ“ªˆÊ’u‚ğ•Û‘¶
+			//æ¬¡ã®å…ˆé ­ä½ç½®ã‚’ä¿å­˜
 			ncnt = cnt + 1;
 			cfile++;
 		}
@@ -333,7 +333,7 @@ void name_table(FILE *fp, char *argv[], uint8 type)
 }
 
 /*========================================================
-y‹@”\zƒtƒ@ƒCƒ‹‚ğŒ‹‡‚·‚é
+ã€æ©Ÿèƒ½ã€‘ãƒ•ã‚¡ã‚¤ãƒ«ã‚’çµåˆã™ã‚‹
 =========================================================*/
 void comp_file(FILE *fp, int argc, char *argv[])
 {
@@ -342,10 +342,10 @@ void comp_file(FILE *fp, int argc, char *argv[])
 	uint32 size;
 
 	for (i = 0; i < comp_mgr.list; i++) {
-		// ƒtƒ@ƒCƒ‹–¼æ“¾
+		// ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
 		if ((fname = getFileName(argv[3], (uint16)i++)) == NULL) {
 			FREE(fname);
-			printf("ƒŠƒXƒg‚©‚çƒtƒ@ƒCƒ‹–¼‚ğæ“¾‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½\n");
+			printf("ãƒªã‚¹ãƒˆã‹ã‚‰ãƒ•ã‚¡ã‚¤ãƒ«åã‚’å–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸ\n");
 			return;
 		}
 
@@ -355,17 +355,17 @@ void comp_file(FILE *fp, int argc, char *argv[])
 			return;
 		}
 
-		//˜AŒ‹ƒtƒ@ƒCƒ‹‚É‘‚«‚İ
+		//é€£çµãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã¿
 		fwrite(mem, 1, size, fp);
 
-		//ŠJ•ú
+		//é–‹æ”¾
 		FREE(mem);
 		FREE(fname);
 	}
 }
 
 /*========================================================
-y‹@”\zƒƒCƒ“
+ã€æ©Ÿèƒ½ã€‘ãƒ¡ã‚¤ãƒ³
 =========================================================*/
 int main(int argc, char *argv[])
 {
@@ -376,19 +376,19 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	//ƒIƒvƒVƒ‡ƒ“‚Ì—L–³‚ğ’²‚×‚é
+	//ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®æœ‰ç„¡ã‚’èª¿ã¹ã‚‹
 	check_option(argc, argv);
 
-	//o—Íƒtƒ@ƒCƒ‹‚ÌƒI[ƒvƒ“
+	//å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚ªãƒ¼ãƒ—ãƒ³
 	if ((fp = fopen(argv[2], "wb")) == NULL) {
-		printf("%sƒtƒ@ƒCƒ‹‚ªƒI[ƒvƒ“‚Å‚«‚Ü‚¹‚ñ\n", argv[1]);
+		printf("%sãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“\n", argv[1]);
 		exit(0);
 	}
 
-	// ƒtƒ@ƒCƒ‹”‚ğæ“¾
+	// ãƒ•ã‚¡ã‚¤ãƒ«æ•°ã‚’å–å¾—
 	comp_mgr.list = getFileNum(argv[3]);
 
-	//ƒIƒvƒVƒ‡ƒ“‚Åˆ—‚ğ•¦‚¯‚é
+	//ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§å‡¦ç†ã‚’æ²¸ã‘ã‚‹
 	switch (argv[1][1]) {
 		case 'c': case 'C':
 			comp_file(fp, argc, argv);
@@ -411,7 +411,7 @@ int main(int argc, char *argv[])
 			break;
 	}
 
-	//o—Íƒtƒ@ƒCƒ‹‚ğ•Â‚¶‚é
+	//å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
 	fclose(fp);
 
 	return 0;
