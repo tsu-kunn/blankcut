@@ -59,9 +59,9 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $(TMPFLAGS) $(INCDIR) -Wa,-al=$*.lst -c $< -o $*.o
 
 clean:
-	@$(RM) *.o *.map *.lst
+	@$(RM) $(SRCDIR)/*.o $(SRCDIR)/*.map $(SRCDIR)/*.lst
 	@$(RM) $(TARGET)
-	@$(RM) *.bak
+	@$(RM) $(SRCDIR)/*.bak
 
 
 install: all
