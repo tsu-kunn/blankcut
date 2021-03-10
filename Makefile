@@ -10,11 +10,10 @@ SRCDIR      =  $(TOPDIR)/src
 STUBDIR     = 
 
 ##--- target/sorce
-TARGET      = emp2rf
 TARGET      = blankcut
-OBJS        = $(SRCDIR)/blankcut.o \
-			  $(SRCDIR)/blank.o \
-			  $(SRCDIR)/mto_memctrl.o
+OBJS        = $(SRCDIR)/blank.o \
+			  $(SRCDIR)/blankcut.o
+#			  $(SRCDIR)/test.o
 LIB_OBJS    = $(OBJS)
 PRX_OBJS    = $(OBJS)
 

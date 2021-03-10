@@ -5,7 +5,7 @@
  * C99/C11に対応(2021/03/08)
  * 
  * Fast 2010/08/24
- * Last 2021/03/08 Ver1.0.8                                      (c)Tsuyoshi.A
+ * Last 2021/03/10 Ver1.0.9                                      (c)Tsuyoshi.A
 =============================================================================*/
 #ifndef _MTO_COMMON_H_
 #define _MTO_COMMON_H_
@@ -137,18 +137,25 @@ enum {
 #define RGB_MAX					0xffffff
 #define RGBA_MAX				0xffffffff
 
+#define RGBA(r, g, b, a)		((r) | (g) << 8 | (b) << 16 | (a) << 24)
+#define GPITCH(w, b)			((uint32)((float)(w) * ((float)(b) / 8.0f)))
+#define SWAP(x, y)				((x) ^= (y) ^= (x) ^= (y))    //xとyの値を入れ替える
+
 // デバッグ関係
 #ifndef NDEBUG
 #if defined(_WINDOWS_)
 #define DBG_PRINT				OutputDebugString
+#define DBG_ASSERT(x, s)		if (!(x)) {char str[256];memset(str,0,sizeof(str));sprintf(str, "%s(%d) : %s\n", __FILE__, __LINE__, s);OutputDebugString(str);assert(0);}
 #define _ASSERT(x)				assert(x)
 #else
 #define DBG_PRINT				printf
+#define DBG_ASSERT(x, s)		if (!(x)) {printf("%s(%d) : %s\n", __FILE__, __LINE__, s);assert(0);}
 #define _ASSERT(x)				assert(x)
 #endif // _WINDOWS_
 #else
-#define DBG_PRINT				
-#define _ASSERT(x)				
+#define DBG_PRINT
+#define DBG_ASSERT(x, s)
+#define _ASSERT(x)
 #endif // NDEBUG
 
 // デバッグ用のメモリチェック
