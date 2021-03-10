@@ -1,5 +1,4 @@
 #include "mto_common.h"
-#include "mto_memctrl.h"
 #include "tim2.h"
 #include "blankcut.h"
 #include "blank.h"
@@ -119,7 +118,6 @@ static int _check_option(int argc, char *argv[])
 =========================================================*/
 static void _release(void)
 {
-	memctrl.release();
 	if (bcut_mgr.fp != NULL) fclose(bcut_mgr.fp);
 }
 
@@ -196,7 +194,7 @@ static bool _read_clut(void)
 		fpos = ftell(bcut_mgr.fp);
 
 		bcut_mgr.csize = bcut_mgr.tm2pHead.ClutSize;
-		bcut_mgr.clut  = (uint8*)memctrl.alloc(bcut_mgr.csize, eMEM_UNLOCK);
+		bcut_mgr.clut  = (uint8*)malloc(bcut_mgr.csize);
 		if (bcut_mgr.clut == NULL) {
 			printf("can't alloc memory!!\n");
 			return false;
@@ -244,7 +242,6 @@ int main(int argc, char *argv[])
 
 	// init manager
 	memset(&bcut_mgr, 0, sizeof(bcut_mgr));
-	memctrl.init(cMEM_SIZE(3));
 
 	// argument check
 	if (!(bcut_mgr.infile = _check_option(argc, argv))) {

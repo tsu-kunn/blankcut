@@ -1,5 +1,4 @@
 #include "mto_common.h"
-#include "mto_memctrl.h"
 #include "tim2.h"
 #include "blankcut.h"
 #include "blank.h"
@@ -13,8 +12,7 @@
 /*========================================================
 【機能】画像データ取得
 =========================================================*/
-static 
- _get_picture_data(FILE *fp, uint8 *work, uint32 msize, uint16 loop)
+static bool _get_picture_data(FILE *fp, uint8 *work, uint32 msize, uint16 loop)
 {
 	uint32 hsize = sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize;
 
@@ -240,7 +238,7 @@ static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_he
 	uint32 *mem32;
 
 	bcp_head->size = GPITCH((bcp_head->wh.w * bcp_head->wh.h), bcut_mgr.bit);
-	mem = (uint8*)memctrl.alloc(bcp_head->size, eMEM_UNLOCK);
+	mem = (uint8*)malloc(bcp_head->size);
 	if (mem == NULL) {
 		printf("can't alloc memory!!\n");
 		return NULL;
@@ -353,7 +351,7 @@ static bool _output_table(void)
 	}
 	fprintf(tfp, "};\n");
 
-	CR_SFREE(mem);
+	SAFE_FREE(mem);
 	fclose(tfp);
 
 	return true;
@@ -406,7 +404,7 @@ bool search_blank_output(void)
 
 	// alloc work memory
 	msize = GPITCH((bcut_mgr.wh.w * bcut_mgr.wh.h), bcut_mgr.bit);
-	mem   = (uint8*)memctrl.alloc(msize, eMEM_UNLOCK);
+	mem   = (uint8*)malloc(msize);
 	if (mem == NULL) {
 		printf("can't alloc memory!!\n");
 		_end_process(tfp, hfp);
@@ -468,7 +466,7 @@ bool search_blank_output(void)
 			// output data
 			fwrite(omem, bcp_head.size, 1, tfp);
 			fwrite(&bcp_head, sizeof(bcp_head), 1, hfp);
-			CR_FREE(omem);
+			SAFE_FREE(omem);
 
 			bcp_head.pixpos += bcp_head.size;
 			bcut_mgr.bc_head.PixcelNum++;
@@ -482,7 +480,7 @@ bool search_blank_output(void)
 	// cut end
 	fclose(tfp);
 	fclose(hfp);
-	CR_FREE(mem);
+	SAFE_FREE(mem);
 
 	// make file header
 	uint32 fsize;
@@ -510,7 +508,7 @@ bool search_blank_output(void)
 		return false;
 	}
 	fwrite(mem, fsize, 1, ofp);
-	CR_SFREE(mem);
+	SAFE_FREE(mem);
 
 	// pixcel data
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
@@ -520,7 +518,7 @@ bool search_blank_output(void)
 		return false;
 	}
 	fwrite(mem, fsize, 1, ofp);
-	CR_SFREE(mem);
+	SAFE_FREE(mem);
 
 	// end process
 	_end_process(NULL, NULL);
