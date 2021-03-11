@@ -5,7 +5,7 @@
  * C99/C11に対応(2021/03/08)
  * 
  * Fast 2010/08/24
- * Last 2021/03/10 Ver1.0.9                                      (c)Tsuyoshi.A
+ * Last 2021/03/11 Ver1.1.0                                      (c)Tsuyoshi.A
 =============================================================================*/
 #ifndef _MTO_COMMON_H_
 #define _MTO_COMMON_H_
@@ -355,6 +355,7 @@ static MTOINLINE uint64 MtoBitReverse64(const uint64 num)
 }
 #endif
 
+
 /*=======================================================================
 【機能】空白チェック
 【引数】c：文字
@@ -383,12 +384,13 @@ static MTOINLINE sint32 MtoIsNumber(const char c)
 #ifndef NINC
 /*=======================================================================
 【機能】ファイルオープン
-【引数】fp　 ：ファイルポインタ
-　　　　fname：ファイル名
-　　　　opt  ：ファイルオプション
-【戻値】ファイルサイズ(0:失敗)
+【引数】fp   ：ファイルポインタ
+        fname：ファイル名
+        opt  ：ファイルオプション
+        fsize：ファイルサイズ保存先(不要の場合はNULL)
+【戻値】ファイルオープンの成否
  =======================================================================*/
-static MTOINLINE uint32 MtoFileOpen(FILE **fp, const char *fname, const char *opt)
+static MTOINLINE sint32 MtoFileOpen(FILE **fp, const char *fname, const char *opt, uint32 *fsize)
 {
 	uint32 size;
 
@@ -400,7 +402,7 @@ static MTOINLINE uint32 MtoFileOpen(FILE **fp, const char *fname, const char *op
 
 	// files open
 	if ((*fp = fopen(fname, opt)) == NULL) {
-		return 0;
+		return FALSE;
 	}
 
 	// get file size
@@ -408,15 +410,61 @@ static MTOINLINE uint32 MtoFileOpen(FILE **fp, const char *fname, const char *op
 	size = ftell(*fp);
 	fseek(*fp, 0, SEEK_SET);
 
-	return size;
+	if (fsize != NULL) {
+		*fsize = size;
+	}
+	
+	return TRUE;
+}
+
+/*-------------------------------------------------------------------
+【機能】ファイル読み込み
+【引数】fname：ファイル名
+        fsize：ファイルサイズ保存先(不要の場合はNULL)
+【戻値】読み込んだファイルのポインタ
+-------------------------------------------------------------------*/
+static MTOINLINE void *MtoFileRead(const char *fname, uint32 *fsize)
+{
+	FILE *fp;
+	void *mem;
+	uint32 size;
+
+	if ((fp = fopen(fname, "rb")) == NULL) {
+#ifndef NDEBUG
+		DBG_PRINT("file not found!\n");
+#endif
+		return NULL;
+	}
+
+	// get file size
+	fseek(fp, 0, SEEK_END);
+	size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	// read file to memory
+	mem = malloc(size);
+
+	if (mem == NULL) {
+		fclose(fp);
+		return NULL;
+	}
+
+	fread(mem, size, 1, fp);
+	fclose(fp);
+
+	if (fsize != NULL) {
+		*fsize = size;
+	}
+
+	return mem;
 }
 
 /*=======================================================================
 【機能】ファイル名取得
 【引数】sname：保存先
         size ：保存先のバッファサイズ
-　　　　path ：ファイルのパス
-　　　　flg  ：拡張子 0:なし 1:あり
+        path ：ファイルのパス
+        flg  ：拡張子 0:なし 1:あり
 【備考】ASCIIコードに対応（日本語は非対応）
  =======================================================================*/
 static MTOINLINE sint32 MtoGetFileName(char *sname, const sint32 size, const char *path, const sint32 flg)
@@ -465,8 +513,8 @@ static MTOINLINE sint32 MtoGetFileName(char *sname, const sint32 size, const cha
 【機能】拡張子取得
 【引数】sname：保存先
         size ：保存先のバッファサイズ
-　　　　path ：ファイルのパス
-　　　　flg  ：. 0:なし 1:あり
+        path ：ファイルのパス
+        flg  ：. 0:なし 1:あり
 【備考】ASCIIコードに対応（日本語は非対応）
  =======================================================================*/
 static MTOINLINE sint32 MtoGetExtension(char *sname, const sint32 size, const char *path, const sint32 flg)

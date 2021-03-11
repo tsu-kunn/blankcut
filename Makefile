@@ -59,6 +59,7 @@ $(TARGET): $(OBJS)
 
 clean:
 	@$(RM) $(SRCDIR)/*.o $(SRCDIR)/*.map $(SRCDIR)/*.lst
+	@$(RM) *.o *.map *.lst
 	@$(RM) $(TARGET)
 	@$(RM) $(SRCDIR)/*.bak
 
