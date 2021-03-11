@@ -209,7 +209,7 @@ static bool _read_clut(void)
 		// output clut
 		char tpath[_MAX_PATH];
 		_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "pal");
-		if (!fileopen(&cfp, tpath, "wb", NULL)) {
+		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
 			printf("パレットが出力できません\n");
 			return false;
 		}
@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
 	}
 
 	// file open
-	if (!fileopen(&bcut_mgr.fp, argv[bcut_mgr.infile], "rb", &bcut_mgr.fsize)) {
+	if (!MtoFileOpen(&bcut_mgr.fp, argv[bcut_mgr.infile], "rb", &bcut_mgr.fsize)) {
 		_release();
 		return 0;
 	}

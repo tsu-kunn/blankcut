@@ -279,7 +279,8 @@ static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_he
 		char tpath[_MAX_PATH], tname[_MAX_FNAME];
 		sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
 		_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, tname, "tm2");
-		if (fileopen(&ft2, tpath, "wb", NULL)) {
+
+		if (MtoFileOpen(&ft2, tpath, "wb", NULL)) {
 			memcpy(&tm2_pic, &bcut_mgr.tm2pHead, sizeof(tm2_pic));
 			tm2_pic.TotalSize   = bcp_head->size + tm2_pic.ClutSize + tm2_pic.HeaderSize;
 			tm2_pic.ImageSize   = bcp_head->size;
@@ -313,13 +314,13 @@ static bool _output_table(void)
 	// table open
 	char tpath[_MAX_PATH];
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tbl");
-	if (!fileopen(&tfp, tpath, "w", NULL)) {
+	if (!MtoFileOpen(&tfp, tpath, "w", NULL)) {
 		return false;
 	}
 
 	// pixcel header
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
-	if ((mem = (uint8*)fileread(tpath, &fsize)) == NULL) {
+	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		fclose(tfp);
 		return false;
@@ -392,12 +393,12 @@ bool search_blank_output(void)
 	// work file
 	char tpath[_MAX_PATH];
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
-	if (!fileopen(&tfp, tpath, "wb", NULL)) {
+	if (!MtoFileOpen(&tfp, tpath, "wb", NULL)) {
 		return false;
 	}
 
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
-	if (!fileopen(&hfp, tpath, "wb", NULL)) {
+	if (!MtoFileOpen(&hfp, tpath, "wb", NULL)) {
 		fclose(tfp);
 		return false;
 	}
@@ -491,7 +492,7 @@ bool search_blank_output(void)
 	_output_table();
 
 	// output file
-	if (!fileopen(&ofp, bcut_mgr.path, "wb", NULL)) {
+	if (!MtoFileOpen(&ofp, bcut_mgr.path, "wb", NULL)) {
 		printf("出力ファイルがオープンできませんでした。\n");
 		_end_process(NULL, NULL);
 		return false;
@@ -502,7 +503,7 @@ bool search_blank_output(void)
 
 	// pixcel header
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
-	if ((mem = (uint8*)fileread(tpath, &fsize)) == NULL) {
+	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		_end_process(NULL, NULL);
 		return false;
@@ -512,7 +513,7 @@ bool search_blank_output(void)
 
 	// pixcel data
 	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
-	if ((mem = (uint8*)fileread(tpath, &fsize)) == NULL) {
+	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		_end_process(NULL, NULL);
 		return false;
