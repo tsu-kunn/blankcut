@@ -181,7 +181,7 @@ enum {
 #define _MAX_PATH			(260)
 #endif
 #ifndef _MAX_FNAME
-#define _MAX_FNAME			(128)
+#define _MAX_FNAME			(256)
 #endif
 #ifndef _MAX_DRIVE
 #define _MAX_DRIVE			(3)
@@ -197,7 +197,7 @@ enum {
  * 互換用変数
  *--------------------------------------------------------------------------*/
 #ifdef _USE_INT64
-	typedef unsigned long long uint64;
+typedef unsigned long long		uint64;
 typedef signed long long		sint64;
 #endif //_USE_INT64
 
