@@ -2,7 +2,7 @@
 #define _BLANK_CUT_H_
 
 /*----------------------------------------------------------------------------
-　・ファイル構造
+  ・ファイル構造
      ┌───────┐
      │ファイルヘッダ│
      ├───────┤
@@ -62,10 +62,8 @@ typedef struct tagBlankCutManager {
 
 	// ファイルパス用
 	char	path[_MAX_PATH];
-	char	drive[_MAX_DRIVE];
 	char	dir[_MAX_DIR];
 	char	name[_MAX_FNAME];
-	char	ext[_MAX_EXT];
 } BlankCutManager;
 
 extern BlankCutManager bcut_mgr;

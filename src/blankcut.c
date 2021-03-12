@@ -258,10 +258,11 @@ int main(int argc, char *argv[])
 	// get out file position
 	if ((bcut_mgr.infile + 1) < argc) {
 		memcpy(bcut_mgr.path, argv[bcut_mgr.infile + 1], sizeof(bcut_mgr.path));
-		_splitpath(bcut_mgr.path, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, bcut_mgr.ext);
+		MtoGetFilePath(bcut_mgr.dir, sizeof(bcut_mgr.dir), bcut_mgr.path);
+		MtoGetFileName(bcut_mgr.name, sizeof(bcut_mgr.name), bcut_mgr.path, 0);
 	} else {
-		// get in file path
-		_splitpath(argv[bcut_mgr.infile], bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, bcut_mgr.ext);
+		MtoGetFilePath(bcut_mgr.dir, sizeof(bcut_mgr.dir), argv[bcut_mgr.infile]);
+		MtoGetFileName(bcut_mgr.name, sizeof(bcut_mgr.name), argv[bcut_mgr.infile], 0);
 
 		// make file path
 		_makepath(bcut_mgr.path, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "blc");
