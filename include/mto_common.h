@@ -5,7 +5,7 @@
  * C99/C11に対応(2021/03/08)
  * 
  * Fast 2010/08/24
- * Last 2021/03/11 Ver1.1.0                                      (c)Tsuyoshi.A
+ * Last 2021/03/12 Ver1.2.0                                      (c)Tsuyoshi.A
 =============================================================================*/
 #ifndef _MTO_COMMON_H_
 #define _MTO_COMMON_H_
@@ -45,9 +45,10 @@
 #include <string.h>
 #include <assert.h>
 
-// C99
+#if __STDC_VERSION__ >= 199901L	// C99以上
 #include <stdint.h>
 #include <stdbool.h>
+#endif
 
 #ifdef _USE_CPP
 #include <iostream>
@@ -178,20 +179,12 @@ enum {
 
 // Windows互換
 #ifndef _MAX_PATH
-#define _MAX_PATH			(260)
+#define _MAX_PATH			(256)
 #endif
 #ifndef _MAX_FNAME
-#define _MAX_FNAME			(256)
+#define _MAX_FNAME			(128)
 #endif
-#ifndef _MAX_DRIVE
-#define _MAX_DRIVE			(3)
-#endif
-#ifndef _MAX_DIR
-#define _MAX_DIR			(128)
-#endif
-#ifndef _MAX_EXT
-#define _MAX_EXT			(64)
-#endif
+
 
 /*---------------------------------------------------------------------------
  * 互換用変数
@@ -457,6 +450,39 @@ static MTOINLINE void *MtoFileRead(const char *fname, uint32 *fsize)
 	}
 
 	return mem;
+}
+
+/*=======================================================================
+【機能】ファイルパスを取得
+【引数】sname：保存先
+        size ：保存先のバッファサイズ
+        path ：フルパス
+【備考】ASCIIコードに対応（日本語は非対応）
+ =======================================================================*/
+static MTOINLINE sint32 MtoGetFilePath(char *sname, const sint32 size, const char *path)
+{
+	// パスの最後を検索
+	char *pathEnd = strrchr(path, '/'); // Linux
+
+	if (pathEnd == NULL) {
+		pathEnd = strrchr(path, '\\'); // Windows
+		if (pathEnd == NULL) {
+#ifndef NDEBUG
+			DBG_PRINT("file path not found!\n");
+#endif
+			return 0;
+		}
+	}
+
+	for (sint32 i = 0; i < (sint32)strlen(path); i++) {
+		if (i >= size) break;
+		if (path + i == pathEnd) {
+			memcpy(sname, path, i);
+			return i;
+		}
+	}
+
+	return 0;
 }
 
 /*=======================================================================
