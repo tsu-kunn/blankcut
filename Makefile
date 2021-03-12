@@ -13,7 +13,7 @@ STUBDIR     =
 TARGET      = blankcut
 OBJS        = $(SRCDIR)/blank.o \
 			  $(SRCDIR)/blankcut.o
-#			  $(SRCDIR)/test.o
+# OBJS		= $(SRCDIR)/test.o
 LIB_OBJS    = $(OBJS)
 PRX_OBJS    = $(OBJS)
 
@@ -32,7 +32,7 @@ USER_DFLAG  = -DLINUX
 CFLAGS      = -std=c11 -Wall -fexceptions -Wuninitialized
 
 ifndef NDEBUG
-CFLAGS     += -O0 -Wold-style-cast $(USER_CFLAG) $(USER_DFLAG)
+CFLAGS     += -O0 $(USER_CFLAG) $(USER_DFLAG)
 
 ## use GDB ?
 ifeq ($(USE_GDB), TRUE)
