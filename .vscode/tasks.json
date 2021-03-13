@@ -1,0 +1,39 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc アクティブなファイルのビルド",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-std=c11",
+                "-Wall",
+                "-fexceptions",
+                "-Wuninitialized",
+                "-g",
+                "-I./include",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "デバッガーによって生成されたタスク。"
+        },
+        {
+            "label": "Makefile",
+            "type": "shell",
+            "command":"make",
+            "args": [],
+            "group": "build"
+        }
+    ],
+    "version": "2.0.0"
+}
