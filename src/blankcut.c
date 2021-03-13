@@ -207,8 +207,8 @@ static bool _read_clut(void)
 		fread(bcut_mgr.clut, bcut_mgr.tm2pHead.ClutSize, 1, bcut_mgr.fp);
 
 		// output clut
-		char tpath[_MAX_PATH];
-		_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "pal");
+		char tpath[_MAX_PATH] = {0};
+		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
 		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
 			printf("パレットが出力できません\n");
 			return false;
@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 		MtoGetFileName(bcut_mgr.name, sizeof(bcut_mgr.name), argv[bcut_mgr.infile], 0);
 
 		// make file path
-		_makepath(bcut_mgr.path, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "blc");
+		MtoMakePath(bcut_mgr.path, sizeof(bcut_mgr.path), bcut_mgr.dir, bcut_mgr.name, "blc", DIR_MODE);
 	}
 
 	// read tim2 header

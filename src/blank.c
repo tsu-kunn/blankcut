@@ -276,9 +276,10 @@ static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_he
 		FILE *ft2;
 		TIM2_PICTUREHEADER tm2_pic;
 
-		char tpath[_MAX_PATH], tname[_MAX_FNAME];
+		char tpath[_MAX_PATH] = {0};
+		char tname[_MAX_FNAME] = {0};
 		sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
-		_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, tname, "tm2");
+		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "tm2", DIR_MODE);
 
 		if (MtoFileOpen(&ft2, tpath, "wb", NULL)) {
 			memcpy(&tm2_pic, &bcut_mgr.tm2pHead, sizeof(tm2_pic));
@@ -312,14 +313,15 @@ static bool _output_table(void)
 	BlankCutPixcelHeader *bcph;
 
 	// table open
-	char tpath[_MAX_PATH];
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tbl");
+	char tpath[_MAX_PATH] = {0};
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "tbl", DIR_MODE);
 	if (!MtoFileOpen(&tfp, tpath, "w", NULL)) {
 		return false;
 	}
 
 	// pixcel header
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
+	memcls(tpath, sizeof(tpath));
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "hed", DIR_MODE);
 	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		fclose(tfp);
@@ -367,10 +369,11 @@ static void _end_process(FILE *tfp, FILE *hfp)
 	if (hfp != NULL) fclose(hfp);
 
 	// remove work files
-	char tpath[_MAX_PATH];
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
+	char tpath[_MAX_PATH] = {0};
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "tmp", DIR_MODE);
 	remove(tpath);
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
+	memcls(tpath, sizeof(tpath));
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "hed", DIR_MODE);
 	remove(tpath);
 }
 
@@ -391,13 +394,14 @@ bool search_blank_output(void)
 	BlankCutPixcelHeader bcp_head;
 
 	// work file
-	char tpath[_MAX_PATH];
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
+	char tpath[_MAX_PATH] = {0};
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "tmp", DIR_MODE);
 	if (!MtoFileOpen(&tfp, tpath, "wb", NULL)) {
 		return false;
 	}
 
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
+	memcls(tpath, sizeof(tpath));
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "hed", DIR_MODE);
 	if (!MtoFileOpen(&hfp, tpath, "wb", NULL)) {
 		fclose(tfp);
 		return false;
@@ -502,7 +506,8 @@ bool search_blank_output(void)
 	fwrite(&bcut_mgr.bc_head, sizeof(BlankCutHeader), 1, ofp);
 
 	// pixcel header
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "hed");
+	memcls(tpath, sizeof(tpath));
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "hed", DIR_MODE);
 	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		_end_process(NULL, NULL);
@@ -512,7 +517,8 @@ bool search_blank_output(void)
 	SAFE_FREE(mem);
 
 	// pixcel data
-	_makepath(tpath, bcut_mgr.drive, bcut_mgr.dir, bcut_mgr.name, "tmp");
+	memcls(tpath, sizeof(tpath));
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "tmp", DIR_MODE);
 	if ((mem = (uint8*)MtoFileRead(tpath, &fsize)) == NULL) {
 		printf("can't alloc memory!!\n");
 		_end_process(NULL, NULL);
