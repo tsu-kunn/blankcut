@@ -5,7 +5,7 @@
  * C99/C11に対応(2021/03/08)
  * 
  * Fast 2010/08/24
- * Last 2021/03/12 Ver1.2.0                                      (c)Tsuyoshi.A
+ * Last 2021/03/13 Ver1.3.0                                      (c)Tsuyoshi.A
 =============================================================================*/
 #ifndef _MTO_COMMON_H_
 #define _MTO_COMMON_H_
@@ -567,6 +567,34 @@ static MTOINLINE sint32 MtoGetExtension(char *sname, const sint32 size, const ch
 		}
 	}
 	return TRUE;
+}
+
+/*=======================================================================
+【機能】パスの作成
+【引数】spath：保存先
+        size ：保存先のバッファサイズ
+        dir  ：ディレクトリのパス
+        name ：ファイル名
+        ext  ：拡張子（不要の場合はNULL）
+		bWin ：false: Linux, true: Windows
+【備考】ASCIIコードに対応（日本語は非対応）
+        ディレクトリとファイル名の区切りと拡張子のピリオドは自動で設定
+ =======================================================================*/
+static MTOINLINE void MtoMakePath(char *spath, const sint32 size, const char *dir, const char *name, const char *ext, const bool bWin)
+{
+	if (bWin) {
+		if (ext == NULL) {
+			snprintf(spath, size, "%s\\%s", dir, name);
+		} else {
+			snprintf(spath, size, "%s\\%s.%s", dir, name, ext);
+		}
+	} else {
+		if (ext == NULL) {
+			snprintf(spath, size, "%s/%s", dir, name);
+		} else {
+			snprintf(spath, size, "%s/%s.%s", dir, name, ext);
+		}
+	}
 }
 
 #endif //NINC
