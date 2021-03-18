@@ -422,6 +422,7 @@ bool search_blank_output(void)
 
 	if (lpmax == 0) {
 		printf("画像データ、または指定サイズが不正です\n");
+		SAFE_FREE(mem);
 		_end_process(tfp, hfp);
 		return false;
 	}
@@ -451,6 +452,7 @@ bool search_blank_output(void)
 
 		// get data
 		if (!_get_picture_data(bcut_mgr.fp, mem, msize, loop)) {
+			SAFE_FREE(mem);
 			_end_process(tfp, hfp);
 			return false;
 		}
@@ -458,12 +460,14 @@ bool search_blank_output(void)
 		// get blank position
 		ret = _get_blank_position(bcut_mgr.fp, mem, msize, &bcp_head);
 		if (ret == 0) {
+			SAFE_FREE(mem);
 			_end_process(tfp, hfp);
 			return false;
 		} else if (ret == 1) {
 			// blank cut
 			omem = _blank_cut(mem, msize, &bcp_head);
 			if (omem == NULL) {
+				SAFE_FREE(mem);
 				_end_process(tfp, hfp);
 				return false;
 			}

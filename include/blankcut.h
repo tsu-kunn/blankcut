@@ -42,7 +42,7 @@ typedef struct tagBlankCutManager {
 	uint8	infile;		// 入力ファイルの位置
 	uint8	pad0[2];
 
-	uint8	pad1;
+	uint8	pict;		// 画像の種類
 	uint8	bit;		// 画像ビット数
 	uint16	bitcount;	// パレット数
 
@@ -55,8 +55,11 @@ typedef struct tagBlankCutManager {
 	MPOINT	pwh;		// 画像サイズ
 	MPOINT	wh;			// チェックするサイズ
 
-	TIM2_FILEHEADER    tm2fHead;
-	TIM2_PICTUREHEADER tm2pHead;
+	TIM2_FILEHEADER		tm2fHead;
+	TIM2_PICTUREHEADER	tm2pHead;
+
+	BITMAPFILEHEADER	bmpfHead;
+	BITMAPINFOHEADER	bmpiHead;
 
 	BlankCutHeader		bc_head;
 

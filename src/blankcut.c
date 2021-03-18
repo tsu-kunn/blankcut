@@ -26,7 +26,7 @@ static void _info_draw(void)
 	printf("       -p [pos] : 基準位置\n");
 	printf("                  ０：左上(default)\n");
 	printf("                  １：右下\n");
-	printf("       -w       : チェックする幅　(省略時は画像幅)\n");
+	printf("       -w       : チェックする幅  (省略時は画像幅)\n");
 	printf("       -h       : チェックする高さ(省略時は画像高さ)\n");
 	printf("       -r       : 幅補正の時、右辺を優先的に変更する※\n");
 	printf("       -b       : 高さ補正の時、上辺を優先的に変更する※\n");
@@ -118,6 +118,8 @@ static int _check_option(int argc, char *argv[])
 =========================================================*/
 static void _release(void)
 {
+	SAFE_FREE(bcut_mgr.clut);
+
 	if (bcut_mgr.fp != NULL) fclose(bcut_mgr.fp);
 }
 
@@ -266,6 +268,19 @@ int main(int argc, char *argv[])
 
 		// make file path
 		MtoMakePath(bcut_mgr.path, sizeof(bcut_mgr.path), bcut_mgr.dir, bcut_mgr.name, "blc", DIR_MODE);
+	}
+
+	// check pict type
+	char ext[4];
+	MtoGetExtension(ext, sizeof(ext), argv[bcut_mgr.infile], 0);
+	if (strcmp(ext, "tm2") == 0) {
+		bcut_mgr.pict = ePICT_TIM2;
+	}  else if (strcmp(ext, "bmp") == 0) {
+		bcut_mgr.pict = ePICT_BMP;
+	} else {
+		printf("対応していない画像ファイルです: %s\n", ext);
+		_release();
+		return 0;
 	}
 
 	// read tim2 header
