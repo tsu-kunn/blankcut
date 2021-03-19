@@ -228,8 +228,67 @@ static bool _read_clut(void)
 	return true;
 }
 
+/*========================================================
+【機能】BMPヘッダの読み込み＆チェック
+=========================================================*/
+static bool _read_check_bmp(void)
+{
+	// get tim2 header
+	fread(&bcut_mgr.bmpfHead, sizeof(BITMAPFILEHEADER), 1, bcut_mgr.fp);
+	fread(&bcut_mgr.bmpiHead, sizeof(BITMAPINFOHEADER), 1, bcut_mgr.fp);
 
+	// check bmp
+	if (bcut_mgr.bmpfHead.bfType != 0x4D42)
+	{ // BMP
+		printf("BMPではありません\n");
+		return false;
+	}
 
+	// check picture size
+	bcut_mgr.pwh.w = bcut_mgr.bmpiHead.biWidth;
+	bcut_mgr.pwh.h = bcut_mgr.bmpiHead.biHeight;
+
+	if ((bcut_mgr.wh.w > bcut_mgr.pwh.w) || (bcut_mgr.wh.h > bcut_mgr.pwh.h))
+	{
+		printf("指定サイズが画像サイズを超えています\n");
+		printf("width :%4d/%4d\n", bcut_mgr.wh.w, bcut_mgr.pwh.w);
+		printf("height:%4d/%4d\n", bcut_mgr.wh.h, bcut_mgr.pwh.h);
+		return false;
+	}
+
+	bcut_mgr.wh.w = bcut_mgr.wh.w ? bcut_mgr.wh.w : bcut_mgr.pwh.w;
+	bcut_mgr.wh.h = bcut_mgr.wh.h ? bcut_mgr.wh.h : bcut_mgr.pwh.h;
+
+	// 画像のビット数取得
+	switch (bcut_mgr.bmpiHead.biBitCount)
+	{
+		//	case 16:
+		//		bcut_mgr.bit = 16;
+		//		bcut_mgr.bitcount = 0;
+		//		break;
+		//	case 24:
+		//		bcut_mgr.bit = 24;
+		//		bcut_mgr.bitcount = 0;
+		//		break;
+	case 32:
+		bcut_mgr.bit = 32;
+		bcut_mgr.bitcount = 0;
+		break;
+		//	case 4:
+		//		bcut_mgr.bit = 4;
+		//		bcut_mgr.bitcount = 16;
+		//		break;
+	case 8:
+		bcut_mgr.bit = 8;
+		bcut_mgr.bitcount = 256;
+		break;
+	default:
+		printf("対応フォーマットは8bitと32bitカラーです\n");
+		return false;
+	}
+
+	return true;
+}
 
 
 
@@ -283,14 +342,21 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	// read tim2 header
-	if (!_read_check_tim2()) {
-		_release();
-		return 0;
-	}
-	if (!_read_clut()) {
-		_release();
-		return 0;
+	// read header & clut
+	if (bcut_mgr.pict == ePICT_BMP)  {
+		if (!_read_check_bmp()) {
+			_release();
+			return 0;
+		}
+	} else {
+		if (!_read_check_tim2()) {
+			_release();
+			return 0;
+		}
+		if (!_read_clut()) {
+			_release();
+			return 0;
+		}
 	}
 
 	// search blank and cut blank
