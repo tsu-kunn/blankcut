@@ -12,9 +12,15 @@
 /*========================================================
 【機能】画像データ取得
 =========================================================*/
-static bool _get_picture_data(FILE *fp, uint8 *work, uint32 msize, uint16 loop)
+static bool _get_picture_data(FILE *fp, uint8 *work, uint32 msize, const uint16 loop)
 {
-	uint32 hsize = sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize;
+	uint32 hsize;
+
+	if (bcut_mgr.pict == ePICT_BMP) {
+		hsize = bcut_mgr.bmpfHead.bfOffBits;
+	} else {
+		hsize = sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize;
+	}
 
 	if (bcut_mgr.wh.w == bcut_mgr.pwh.w) {
 		// 幅が同じ？
@@ -55,7 +61,7 @@ static bool _get_picture_data(FILE *fp, uint8 *work, uint32 msize, uint16 loop)
 /*========================================================
 【機能】余白削除後のサイズを指定倍数に補整
 =========================================================*/
-static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
+static bool _size_revision(BlankCutPixcelHeader *bcp_head, const uint8 rev)
 {
 	MPOINT txy, twh;
 
@@ -128,7 +134,7 @@ static bool _size_revision(BlankCutPixcelHeader *bcp_head, uint8 rev)
 【機能】余白位置設定
 【戻値】0:error 1:cut ok 2:all blank
 =========================================================*/
-static int _get_blank_position(FILE *fp, uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_head)
+static int _get_blank_position(FILE *fp, uint8 *work, const uint32 msize, BlankCutPixcelHeader *bcp_head)
 {
 	int i, j;
 	uint32 datums, cnt, pitch;
@@ -231,7 +237,7 @@ _cut_loop_end4:
 /*========================================================
 【機能】余白削除
 =========================================================*/
-static uint8 *_blank_cut(uint8 *work, uint32 msize, BlankCutPixcelHeader *bcp_head)
+static uint8 *_blank_cut(uint8 *work, const uint32 msize, BlankCutPixcelHeader *bcp_head)
 {
 	int w, h;
 	uint8 *mem, *mem8;
@@ -379,8 +385,6 @@ static void _end_process(FILE *tfp, FILE *hfp)
 
 
 
-
-
 /*========================================================
 【機能】余白を削除し出力
 =========================================================*/
@@ -435,7 +439,11 @@ bool search_blank_output(void)
 	bcp_head.fwh.h = bcut_mgr.wh.h;
 
 	// set position is pixcel data
-	fseek(bcut_mgr.fp, (sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize), SEEK_SET);
+	if (bcut_mgr.pict == ePICT_BMP) {
+		fseek(bcut_mgr.fp, bcut_mgr.bmpfHead.bfOffBits, SEEK_SET);
+	} else {
+		fseek(bcut_mgr.fp, (sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize), SEEK_SET);
+	}
 
 	// search & cut & output
 	do {
