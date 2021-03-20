@@ -184,9 +184,9 @@ static bool _read_check_tim2(void)
 }
 
 /*========================================================
-【機能】clutデータ読み込み
+【機能】tim2のclutデータ読み込み
 =========================================================*/
-static bool _read_clut(void)
+static bool _read_tim2_clut(void)
 {
 	FILE *cfp;
 	uint32 fpos;
@@ -212,7 +212,7 @@ static bool _read_clut(void)
 		char tpath[_MAX_PATH] = {0};
 		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
 		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
-			printf("パレットが出力できません\n");
+			printf("CLUTが出力できません\n");
 			return false;
 		}
 		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
@@ -290,6 +290,50 @@ static bool _read_check_bmp(void)
 	return true;
 }
 
+/*========================================================
+【機能】bmpのclutデータ読み込み
+=========================================================*/
+static bool _read_bmp_clut(void)
+{
+	FILE *cfp;
+	uint32 fpos;
+
+	if (bcut_mgr.bit <= 8) {
+		// 現在地取得
+		fpos = ftell(bcut_mgr.fp);
+
+		bcut_mgr.csize = bcut_mgr.bitcount * 4;
+		bcut_mgr.clut  = (uint8*)malloc(bcut_mgr.csize);
+		if (bcut_mgr.clut == NULL) {
+			printf("can't alloc memory!!\n");
+			return false;
+		}
+
+		// get clut
+		uint32 clut_pos = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+		fseek(bcut_mgr.fp, clut_pos, SEEK_SET);
+		fread(bcut_mgr.clut, bcut_mgr.csize, 1, bcut_mgr.fp);
+
+		// output clut
+		char tpath[_MAX_PATH] = {0};
+		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
+		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
+			printf("CLUTが出力できません\n");
+			return false;
+		}
+		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
+		fclose(cfp);
+
+		// 元に戻す
+		fseek(bcut_mgr.fp, fpos, SEEK_SET);
+	} else {
+		bcut_mgr.clut  = NULL;
+		bcut_mgr.csize = 0;
+	}
+
+	return true;
+}
+
 
 
 /*========================================================
@@ -348,12 +392,17 @@ int main(int argc, char *argv[])
 			_release();
 			return 0;
 		}
+		if (!_read_bmp_clut()) {
+			_release();
+			return 0;
+		}
 	} else {
+		// dehault is tim2
 		if (!_read_check_tim2()) {
 			_release();
 			return 0;
 		}
-		if (!_read_clut()) {
+		if (!_read_tim2_clut()) {
 			_release();
 			return 0;
 		}
