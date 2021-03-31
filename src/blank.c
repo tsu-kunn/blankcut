@@ -235,6 +235,88 @@ _cut_loop_end4:
 }
 
 /*========================================================
+【機能】BMPの出力
+=========================================================*/
+static bool _output_bmp(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
+{
+	FILE *fp;
+	int pcount;
+	uint32 bsize, hsize, isize, psize;
+	BITMAPFILEHEADER bmHead;
+	BITMAPINFOHEADER bmInfo;
+
+	char tpath[_MAX_PATH] = {0};
+	char tname[_MAX_FNAME] = {0};
+	sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "bmp", DIR_MODE);
+
+	// BMP作成
+	memset(&bmHead, 0, sizeof(bmHead));
+	memset(&bmInfo, 0, sizeof(bmInfo));
+
+	pcount = bcut_mgr.bit == 4 ? 16 : 256;
+	if (bcut_mgr.bit >= 24) pcount = 0; // Releaseでクリティカルエラーが出るので変更
+
+	hsize = sizeof(BITMAPFILEHEADER);
+	isize = sizeof(BITMAPINFOHEADER);
+	psize = sizeof(RGBAQUAD) * pcount;
+	bsize = bcp_head->size + hsize + isize + psize;
+
+	bmHead.bfType = 0x4D42; //BM
+	bmHead.bfSize = bsize;
+	bmHead.bfReserved1 = 0;
+	bmHead.bfReserved2 = 0;
+	bmHead.bfOffBits = hsize + isize + psize;
+
+	bmInfo.biSize = isize;
+	bmInfo.biWidth = bcp_head->wh.w;
+	bmInfo.biHeight = bcp_head->wh.h;
+	bmInfo.biPlanes = 1;
+	bmInfo.biBitCount = bcut_mgr.bit;
+
+	// BMP出力
+	if (MtoFileOpen(&fp, tpath, "wb", NULL)) {
+		fwrite(&bmHead, hsize, 1, fp);
+		fwrite(&bmInfo, isize, 1, fp);
+		if (bcut_mgr.csize) fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, fp);
+		fwrite(mem, bcp_head->size, 1, fp);
+		fclose(fp);
+	}
+
+	return true;
+}
+
+/*========================================================
+【機能】TIM2の出力
+=========================================================*/
+static bool _output_tim2(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
+{
+	FILE *ft2;
+	TIM2_PICTUREHEADER tm2_pic;
+
+	char tpath[_MAX_PATH] = {0};
+	char tname[_MAX_FNAME] = {0};
+	sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "tm2", DIR_MODE);
+
+	if (MtoFileOpen(&ft2, tpath, "wb", NULL)) {
+		memcpy(&tm2_pic, &bcut_mgr.tm2pHead, sizeof(tm2_pic));
+		tm2_pic.TotalSize   = bcp_head->size + tm2_pic.ClutSize + tm2_pic.HeaderSize;
+		tm2_pic.ImageSize   = bcp_head->size;
+		tm2_pic.ImageWidth  = bcp_head->wh.w;
+		tm2_pic.ImageHeight = bcp_head->wh.h;
+
+		fwrite(&bcut_mgr.tm2fHead, sizeof(TIM2_FILEHEADER), 1, ft2);
+		fwrite(&tm2_pic, sizeof(tm2_pic), 1, ft2);
+		fwrite(mem, bcp_head->size, 1, ft2);
+		if (bcut_mgr.csize) fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, ft2);
+		fclose(ft2);
+	}
+
+	return true;
+}
+
+/*========================================================
 【機能】余白削除
 =========================================================*/
 static uint8 *_blank_cut(uint8 *work, const uint32 msize, BlankCutPixcelHeader *bcp_head)
@@ -277,28 +359,12 @@ static uint8 *_blank_cut(uint8 *work, const uint32 msize, BlankCutPixcelHeader *
 		}
 	}
 
-	// tim2 output?
+	// bmp/tim2 output?
 	if (bcut_mgr.optg) {
-		FILE *ft2;
-		TIM2_PICTUREHEADER tm2_pic;
-
-		char tpath[_MAX_PATH] = {0};
-		char tname[_MAX_FNAME] = {0};
-		sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
-		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "tm2", DIR_MODE);
-
-		if (MtoFileOpen(&ft2, tpath, "wb", NULL)) {
-			memcpy(&tm2_pic, &bcut_mgr.tm2pHead, sizeof(tm2_pic));
-			tm2_pic.TotalSize   = bcp_head->size + tm2_pic.ClutSize + tm2_pic.HeaderSize;
-			tm2_pic.ImageSize   = bcp_head->size;
-			tm2_pic.ImageWidth  = bcp_head->wh.w;
-			tm2_pic.ImageHeight = bcp_head->wh.h;
-
-			fwrite(&bcut_mgr.tm2fHead, sizeof(TIM2_FILEHEADER), 1, ft2);
-			fwrite(&tm2_pic, sizeof(tm2_pic), 1, ft2);
-			fwrite(mem, bcp_head->size, 1, ft2);
-			if (bcut_mgr.csize) fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, ft2);
-			fclose(ft2);
+		if (bcut_mgr.pict == ePICT_BMP) {
+			_output_bmp(mem, bcp_head);
+		} else {
+			_output_tim2(mem, bcp_head);
 		}
 	}
 
