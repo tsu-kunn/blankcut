@@ -18,7 +18,7 @@ BlankCutManager bcut_mgr;
 static void _info_draw(void)
 {
 	printf("|||||||||||||||          BLANK CUT          ||||||||||||||||\n");
-	printf("blankcut.exe Version 1.03            (c)T.Araki-NOV 15 2004-\n");
+	printf("blankcut.exe Version 1.10            (c)T.Araki-APR 02 2021-\n");
 	printf("\n");
 	printf("blankcut [option] [in file] [out file]\n");
 	printf("    [option]\n");
@@ -31,7 +31,7 @@ static void _info_draw(void)
 	printf("       -r       : 幅補正の時、右辺を優先的に変更する※\n");
 	printf("       -b       : 高さ補正の時、上辺を優先的に変更する※\n");
 	printf("       -t       : テーブル出力\n");
-	printf("       -g       : 余白を削ったtim2出力\n");
+	printf("       -g       : 余白を削ったtim2/bmp出力\n");
 	printf("       -q       : 標準出力への出力制御\n");
 	printf("\n");
 	printf("[out file]は省略可能。\n");
@@ -212,7 +212,7 @@ static bool _read_tim2_clut(void)
 		char tpath[_MAX_PATH] = {0};
 		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
 		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
-			printf("CLUTが出力できません\n");
+			printf("CLUTが出力できません: %s\n", tpath);
 			return false;
 		}
 		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
@@ -318,7 +318,7 @@ static bool _read_bmp_clut(void)
 		char tpath[_MAX_PATH] = {0};
 		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
 		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
-			printf("CLUTが出力できません\n");
+			printf("CLUTが出力できません: %s\n", tpath);
 			return false;
 		}
 		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
@@ -356,6 +356,7 @@ int main(int argc, char *argv[])
 
 	// file open
 	if (!MtoFileOpen(&bcut_mgr.fp, argv[bcut_mgr.infile], "rb", &bcut_mgr.fsize)) {
+		printf("ファイルが読み込めませんでした: %s\n", argv[bcut_mgr.infile]);
 		_release();
 		return 0;
 	}
