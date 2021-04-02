@@ -9,7 +9,7 @@
                 "_DEBUG"
             ],
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c17",
+            "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-arm64"
         }
