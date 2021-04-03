@@ -150,6 +150,15 @@ $> blankcut -p 0 -w 160 -h 160 -g -t s07_kae.tm2 .\outkae\s07_kae.blc
 エラーメッセージ以外は表示されなくなります。  
 経過が出力されなくなるのでお薦めできない。  
 
+## サンプルの実行方法
+- 256色
+$ ./blankcut -w 128 -h 128 -g -t ./pict/sample_256.bmp ./output/sample_256.blc
+- 32bitカラー
+$ ./blankcut -w 128 -h 128 -g -t ./pict/sample_32.bmp ./output/sample_32.blc
+
+256x384サイズの画像を128x128サイズ(-w/-h)で切り出し、緑色の不要な余白を削除します。  
+その際に切り出した画像を保存し(-g)、Pixcelヘッダの内容をテーブルとして出力(-t)します。
+
 ## 履歴
 - 2004/11/12 (ver.1.00)
   - 初版。  
