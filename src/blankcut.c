@@ -104,7 +104,7 @@ static int _check_option(int argc, char *argv[])
 			return 0;
 		}
 
-		if (++opt > (argc - 2)) { // -2:入力、出力ファイル
+		if (++opt > (argc - 1)) { // -1:入力ファイル
 			printf("オプションの指定が不正です。\n");
 			return 0;
 		}
