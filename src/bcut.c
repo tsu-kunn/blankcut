@@ -1,11 +1,14 @@
 #include "mto_common.h"
 
-
-/*-------------------------------------------------------------------
-y@\zoCit@CŞ
--------------------------------------------------------------------*/
-int main(int argc, char *argv[])
+/*=======================================================================
+【機能】バイナリ分割
+【引数】outPath：出力先
+        inPath ：保存先のバッファサイズ
+        cutSize：ファイルのパス
+ =======================================================================*/
+int binary_cut(const char *outPath, const char *inPath, const sint32 cutSize)
 {
+# if 0
 	FILE *fp, *ofp;
 	int i, loop, out;
 	uint8 *mem, *stp;
@@ -83,6 +86,7 @@ int main(int argc, char *argv[])
 prog_end:
 	fclose(fp);
 	FREE(mem);
+#endif
 
 	return 0;
 }

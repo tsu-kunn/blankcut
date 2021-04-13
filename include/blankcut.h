@@ -51,6 +51,7 @@ typedef struct tagBlankCutManager {
 	uint8	optg;		// tim2出力
 	uint8	optb:4;		// 補正タイプ（上辺/下辺）
 	uint8	optr:4;		// 補正タイプ（左辺/右辺）
+	sint32	optc;		// バイナリ分割
 
 	MPOINT	pwh;		// 画像サイズ
 	MPOINT	wh;			// チェックするサイズ

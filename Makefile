@@ -12,7 +12,8 @@ STUBDIR     =
 ##--- target/sorce
 TARGET      = blankcut
 OBJS        = $(SRCDIR)/blank.o \
-			  $(SRCDIR)/blankcut.o
+			  $(SRCDIR)/blankcut.o \
+			  $(SRCDIR)/bcut.o
 # OBJS		= $(SRCDIR)/test.o
 LIB_OBJS    = $(OBJS)
 PRX_OBJS    = $(OBJS)

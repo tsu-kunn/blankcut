@@ -2,6 +2,7 @@
 #include "tim2.h"
 #include "blankcut.h"
 #include "blank.h"
+#include "bcut.h"
 
 #if defined(_USE_CRTDBG) && !defined(NDEBUG)
 #include <crtdbg.h>
@@ -18,7 +19,7 @@ BlankCutManager bcut_mgr;
 static void _info_draw(void)
 {
 	printf("|||||||||||||||          BLANK CUT          ||||||||||||||||\n");
-	printf("blankcut.exe Version 1.10            (c)T.Araki-APR 02 2021-\n");
+	printf("blankcut.exe Version 1.20            (c)T.Araki-APR 13 2021-\n");
 	printf("\n");
 	printf("blankcut [option] [in file] [out file]\n");
 	printf("    [option]\n");
@@ -32,10 +33,13 @@ static void _info_draw(void)
 	printf("       -b       : 高さ補正の時、上辺を優先的に変更する※\n");
 	printf("       -t       : テーブル出力\n");
 	printf("       -g       : 余白を削ったtim2/bmp出力\n");
+	printf("       -c [cut] : バイナリ分割\n");
+	printf("                  cut: 分割サイズ\n");
 	printf("       -q       : 標準出力への出力制御\n");
 	printf("\n");
 	printf("[out file]は省略可能。\n");
 	printf("その場合は[in file]と同じ位置に出力される。\n");
+	printf("※バイナリ分割(-c)を指定している場合は省略不可。\n");
 	printf("\n");
 	printf("※省略時は中央揃え。\n");
 }
@@ -95,11 +99,23 @@ static int _check_option(int argc, char *argv[])
 		case 'g': case 'G':
 			bcut_mgr.optg = true;
 			break;
+		case 'c': case 'C':
+			if (++opt >= argc) {
+				printf("バイナリ分割サイズが指定されていません。\n");
+				return 0;
+			}
+			bcut_mgr.optc = strtol(argv[opt], &stp, 0);
+
+			if (bcut_mgr.optc <= 0) {
+				printf("バイナリカットサイズが不正です: %d\n", bcut_mgr.optc);
+				return 0;
+			}
+			break;
 		case '?':
 			_info_draw();
 			return 0;
 		default:
-			printf("サポートされていない拡張子です\n");
+			printf("サポートされていない拡張子です。\n");
 			printf("『blankcut -?』でヘルプ\n");
 			return 0;
 		}
@@ -350,6 +366,14 @@ int main(int argc, char *argv[])
 
 	// argument check
 	if (!(bcut_mgr.infile = _check_option(argc, argv))) {
+		_release();
+		return 0;
+	}
+
+	// Binary cut
+	if (bcut_mgr.optc > 0) {
+		printf("バイナリ分割実行: %dByte\n", bcut_mgr.optc);
+		binary_cut(argv[bcut_mgr.infile + 1] , argv[bcut_mgr.infile], bcut_mgr.optc);
 		_release();
 		return 0;
 	}
