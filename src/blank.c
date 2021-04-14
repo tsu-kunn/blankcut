@@ -467,6 +467,7 @@ bool search_blank_output(void)
 	char tpath[_MAX_PATH] = {0};
 	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "tmp", DIR_MODE);
 	if (!MtoFileOpen(&tfp, tpath, "wb", NULL)) {
+		printf("tmpファイルが作成できません: %s\n", tpath);
 		return false;
 	}
 
@@ -474,6 +475,7 @@ bool search_blank_output(void)
 	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "hed", DIR_MODE);
 	if (!MtoFileOpen(&hfp, tpath, "wb", NULL)) {
 		fclose(tfp);
+		printf("hedファイルが作成できません: %s\n", tpath);
 		return false;
 	}
 
