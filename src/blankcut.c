@@ -39,7 +39,6 @@ static void _info_draw(void)
 	printf("\n");
 	printf("[out file]は省略可能。\n");
 	printf("その場合は[in file]と同じ位置に出力される。\n");
-	printf("※バイナリ分割(-c)を指定している場合は省略不可。\n");
 	printf("\n");
 	printf("※省略時は中央揃え。\n");
 }
@@ -373,7 +372,7 @@ int main(int argc, char *argv[])
 	// Binary cut
 	if (bcut_mgr.optc > 0) {
 		printf("バイナリ分割実行: %dByte\n", bcut_mgr.optc);
-		binary_cut(argv[bcut_mgr.infile + 1] , argv[bcut_mgr.infile], bcut_mgr.optc);
+		binary_cut(argv[bcut_mgr.infile + ((bcut_mgr.infile + 1) < argc ? 1 : 0)], argv[bcut_mgr.infile], bcut_mgr.optc);
 		_release();
 		return 0;
 	}

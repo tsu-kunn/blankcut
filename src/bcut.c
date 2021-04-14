@@ -8,30 +8,20 @@
  =======================================================================*/
 int binary_cut(const char *outPath, const char *inPath, const sint32 cutSize)
 {
-# if 0
 	FILE *fp, *ofp;
 	int i, loop, out;
 	uint8 *mem, *stp;
-	uint32 fsize, csize, frac;
-	char opath[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], name[_MAX_FNAME], ext[_MAX_EXT];
+	uint32 fsize, frac;
 
-	// argument check
-	if (argc != 3 && argc != 4) {
-		printf("|||||||||||||||          BINARY CUT          |||||||||||||||\n");
-		printf("bcut.exe Version 1.00                 (c)T.Araki-NOV 4 2004-\n");
-		printf("\n");
-		printf("bcut [cut size] [filename] [output path]\n");
-		printf("cut size    : ŞTCY\n");
-		printf("output path : oÍćĚpX(ČŞľ˝ęüÍĆŻśpX)\n");
-		return 0;
-	}
+	// get output file path info
+	char opath[_MAX_PATH], dir[_MAX_DIR], name[_MAX_FNAME];
 
-	// output path?
-	out = (argc == 4 ? 1 : 0);
+	MtoGetFilePath(dir, sizeof(dir), outPath);
+	MtoGetFileName(name, sizeof(name), outPath, 0);
 
 	// files open
-	if ((fp = fopen(argv[2], "rb")) == NULL) {
-		printf("%s not found!\n", argv[2]);
+	if ((fp = fopen(inPath, "rb")) == NULL) {
+		printf("%s not found!\n", inPath);
 		return 0;
 	}
 
@@ -40,22 +30,23 @@ int binary_cut(const char *outPath, const char *inPath, const sint32 cutSize)
 	fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	// get cut size
-	csize = strtol(argv[1], &stp, 0);
-
 	// read file to memory
-	if ((mem = malloc(csize)) == NULL) {
-		printf("can't alloc memory!!\n");
+	if ((mem = malloc(cutSize)) == NULL) {
+		printf("can't alloc memory!! : %dByte\n", cutSize);
 		goto prog_end;
 	}
 
-	// get file path info
-	_splitpath(argv[2], drive, dir, name, ext);
-
 	// get number of a loop
-	loop = fsize / csize;
-	frac = fsize % csize;
+	loop = fsize / cutSize;
+	frac = fsize % cutSize;
 
+	printf("In file  : %s\n", inPath);
+	printf("File size: %d\n", fsize);
+	printf("Out path : %s\n", dir);
+	printf("split    : %d\n", loop);
+	printf("frac size: %d\n", frac);
+
+#if 0
 	// file put&out
 	for (i = 0; i < (loop + 1); i++) {
 		// read binary data
@@ -82,11 +73,11 @@ int binary_cut(const char *outPath, const char *inPath, const sint32 cutSize)
 	}
 
 	printf("binary cut end : %s(%d)\n", argv[2], i);
+#endif
 
 prog_end:
 	fclose(fp);
-	FREE(mem);
-#endif
+	SAFE_FREE(mem);
 
 	return 0;
 }
