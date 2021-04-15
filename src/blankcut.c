@@ -19,7 +19,7 @@ BlankCutManager bcut_mgr;
 static void _info_draw(void)
 {
 	printf("|||||||||||||||          BLANK CUT          ||||||||||||||||\n");
-	printf("blankcut.exe Version 1.20            (c)T.Araki-APR 13 2021-\n");
+	printf("blankcut.exe Version 1.20            (c)T.Araki-APR 16 2021-\n");
 	printf("\n");
 	printf("blankcut [option] [in file] [out file]\n");
 	printf("    [option]\n");
@@ -371,8 +371,10 @@ int main(int argc, char *argv[])
 
 	// Binary cut
 	if (bcut_mgr.optc > 0) {
-		printf("バイナリ分割実行: %dByte\n", bcut_mgr.optc);
-		binary_cut(argv[bcut_mgr.infile + ((bcut_mgr.infile + 1) < argc ? 1 : 0)], argv[bcut_mgr.infile], bcut_mgr.optc);
+		if (!bcut_mgr.optq) {
+			printf("Binary cut start: %dByte\n", bcut_mgr.optc);
+		}
+		binary_cut(argv[bcut_mgr.infile + ((bcut_mgr.infile + 1) < argc ? 1 : 0)], argv[bcut_mgr.infile], bcut_mgr.optc, bcut_mgr.optq);
 		_release();
 		return 0;
 	}

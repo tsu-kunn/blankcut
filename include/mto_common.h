@@ -35,6 +35,12 @@
 #define _USE_CPP				// C++ソース
 #endif
 
+#ifdef __linux__
+#define DIR_MODE false			// "/"でパス区切り
+#else
+#define DIR_MODE true			// "\\"でパス区切り
+#endif
+
 
 /*---------------------------------------------------------------------------
  * 全体で使用する標準ライブラリ
