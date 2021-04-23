@@ -185,7 +185,7 @@ enum {
 
 // Windows互換
 #ifndef _MAX_PATH
-#define _MAX_PATH			(260)
+#define _MAX_PATH			(264)
 #endif
 #ifndef _MAX_FNAME
 #define _MAX_FNAME			(128)

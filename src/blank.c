@@ -246,8 +246,8 @@ static bool _output_bmp(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
 	BITMAPINFOHEADER bmInfo;
 
 	char tpath[_MAX_PATH] = {0};
-	char tname[_MAX_FNAME] = {0};
-	sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
+	char tname[_MAX_PATH] = {0};
+	snprintf(tname, sizeof(tname), "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
 	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "bmp", DIR_MODE);
 
 	// BMP作成
@@ -295,8 +295,8 @@ static bool _output_tim2(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
 	TIM2_PICTUREHEADER tm2_pic;
 
 	char tpath[_MAX_PATH] = {0};
-	char tname[_MAX_FNAME] = {0};
-	sprintf(tname, "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
+	char tname[_MAX_PATH] = {0};
+	snprintf(tname, sizeof(tname), "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
 	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "tm2", DIR_MODE);
 
 	if (MtoFileOpen(&ft2, tpath, "wb", NULL)) {
