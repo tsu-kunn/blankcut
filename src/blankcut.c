@@ -400,7 +400,7 @@ int main(int argc, char *argv[])
 	}
 
 	// check pict type
-	char ext[4];
+	char ext[4] = {0};
 	MtoGetExtension(ext, sizeof(ext), argv[bcut_mgr.infile], 0);
 	if (strcmp(ext, "tm2") == 0) {
 		bcut_mgr.pict = ePICT_TIM2;
