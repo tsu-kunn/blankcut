@@ -19,7 +19,7 @@ BlankCutManager bcut_mgr;
 static void _info_draw(void)
 {
 	printf("|||||||||||||||          BLANK CUT          ||||||||||||||||\n");
-	printf("blankcut.exe Version 1.20            (c)T.Araki-APR 16 2021-\n");
+	printf("blankcut.exe Version 1.21            (c)T.Araki-APR 29 2021-\n");
 	printf("\n");
 	printf("blankcut [option] [in file] [out file]\n");
 	printf("    [option]\n");
