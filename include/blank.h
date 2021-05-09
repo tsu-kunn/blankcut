@@ -4,6 +4,7 @@
 enum {
     ePICT_TIM2 = 0,
     ePICT_BMP,
+    ePICT_TGA,
     ePICT_MAX
 };
 

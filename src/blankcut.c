@@ -1,5 +1,6 @@
 #include "mto_common.h"
 #include "tim2.h"
+#include "tga.h"
 #include "blankcut.h"
 #include "blank.h"
 #include "bcut.h"

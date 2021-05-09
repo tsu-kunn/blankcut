@@ -62,6 +62,9 @@ typedef struct tagBlankCutManager {
 	BITMAPFILEHEADER	bmpfHead;
 	BITMAPINFOHEADER	bmpiHead;
 
+	struct TGAHeader	tgaHead;
+	struct TGAFooter	tgaFooter;
+
 	BlankCutHeader		bc_head;
 
 	// ファイルパス用
