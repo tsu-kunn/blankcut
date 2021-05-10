@@ -33,7 +33,7 @@ static void _info_draw(void)
 	printf("       -r       : 幅補正の時、右辺を優先的に変更する※\n");
 	printf("       -b       : 高さ補正の時、上辺を優先的に変更する※\n");
 	printf("       -t       : テーブル出力\n");
-	printf("       -g       : 余白を削ったtim2/bmp出力\n");
+	printf("       -g       : 余白を削ったtim2/bmp/tga出力\n");
 	printf("       -c [cut] : バイナリ分割\n");
 	printf("                  cut: 分割サイズ\n");
 	printf("       -q       : 標準出力への出力制御\n");
@@ -307,7 +307,7 @@ static bool _read_check_bmp(void)
 }
 
 /*========================================================
-【機能】bmpのclutデータ読み込み
+【機能】BMPのclutデータ読み込み
 =========================================================*/
 static bool _read_bmp_clut(void)
 {
@@ -350,6 +350,140 @@ static bool _read_bmp_clut(void)
 	return true;
 }
 
+/*========================================================
+【機能】TGAヘッダの読み込み＆チェック
+=========================================================*/
+static bool _read_check_tga(void)
+{
+	// get tga header
+	fread(&bcut_mgr.tgaHead.IDField     , sizeof(bcut_mgr.tgaHead.IDField)     , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.usePalette  , sizeof(bcut_mgr.tgaHead.usePalette)  , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageType   , sizeof(bcut_mgr.tgaHead.imageType)   , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.paletteIndex, sizeof(bcut_mgr.tgaHead.paletteIndex), 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.paletteColor, sizeof(bcut_mgr.tgaHead.paletteColor), 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.paletteBit  , sizeof(bcut_mgr.tgaHead.paletteBit)  , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageX      , sizeof(bcut_mgr.tgaHead.imageX)      , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageY      , sizeof(bcut_mgr.tgaHead.imageY)      , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageW      , sizeof(bcut_mgr.tgaHead.imageW)      , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageH      , sizeof(bcut_mgr.tgaHead.imageH)      , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.imageBit    , sizeof(bcut_mgr.tgaHead.imageBit)    , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.discripter  , sizoef(bcut_mgr.tgaHead.discripter)  , 1, bcut_mgr.fp);
+
+	// check tga
+	// 原点が0ではない？
+	if (bcut_mgr.tgaHead.imageX != 0 && bcut_mgr.tgaHead.imageY != 0) {
+		printf("原点が0ではありません\n");
+		return false;
+	}
+}
+
+	// 対応していないイメージタイプ？
+	if (bcut_mgr.tgaHead.imageType != TGA_IMAGE_TYPE_INDEX && bcut_mgr.tgaHead.imageType != TGA_IMAGE_TYPE_FULL) {
+		printf("対応していないイメージタイプです: %d\n", bcut_mgr.tgaHead.imageType);
+		return false;
+	}
+
+	// 対応パレット？
+	if (bcut_mgr.tgaHead.usePalette) {
+		if (bcut_mgr.tgaHead.paletteIndex != 0) {
+			printf("パレット画像ですが、パレット情報がありません\n");
+			return false;
+		}
+		if (bcut_mgr.tgaHead.paletteBit != 32) {
+			printf("対応しているのは32bitのみです: %d\n", bcut_mgr.tgaHead.paletteBit);
+			return false;
+		}
+	}
+
+	// check picture size
+	bcut_mgr.pwh.w = bcut_mgr.tgaHead.imageW;
+	bcut_mgr.pwh.h = bcut_mgr.tgaHead.imageH;
+
+	if ((bcut_mgr.wh.w > bcut_mgr.pwh.w) || (bcut_mgr.wh.h > bcut_mgr.pwh.h))
+	{
+		printf("指定サイズが画像サイズを超えています\n");
+		printf("width :%4d/%4d\n", bcut_mgr.wh.w, bcut_mgr.pwh.w);
+		printf("height:%4d/%4d\n", bcut_mgr.wh.h, bcut_mgr.pwh.h);
+		return false;
+	}
+
+	bcut_mgr.wh.w = bcut_mgr.wh.w ? bcut_mgr.wh.w : bcut_mgr.pwh.w;
+	bcut_mgr.wh.h = bcut_mgr.wh.h ? bcut_mgr.wh.h : bcut_mgr.pwh.h;
+
+	// 画像のビット数取得
+	switch (bcut_mgr.tgaHead.imageBit)
+	{
+		//	case 16:
+		//		bcut_mgr.bit = 16;
+		//		bcut_mgr.bitcount = 0;
+		//		break;
+		//	case 24:
+		//		bcut_mgr.bit = 24;
+		//		bcut_mgr.bitcount = 0;
+		//		break;
+	case 32:
+		bcut_mgr.bit = 32;
+		bcut_mgr.bitcount = 0;
+		break;
+		//	case 4:
+		//		bcut_mgr.bit = 4;
+		//		bcut_mgr.bitcount = 16;
+		//		break;
+	case 8:
+		bcut_mgr.bit = 8;
+		bcut_mgr.bitcount = 256;
+		break;
+	default:
+		printf("対応フォーマットは8bitと32bitカラーです\n");
+		return false;
+	}
+
+	return true;
+}
+
+/*========================================================
+【機能】TGAのclutデータ読み込み
+=========================================================*/
+static bool _read_tga_clut(void)
+{
+	FILE *cfp;
+	uint32 fpos;
+
+	if (bcut_mgr.bit <= 8) {
+		// 現在地取得
+		fpos = ftell(bcut_mgr.fp);
+
+		bcut_mgr.csize = bcut_mgr.bitcount * 4;
+		bcut_mgr.clut  = (uint8*)malloc(bcut_mgr.csize);
+		if (bcut_mgr.clut == NULL) {
+			printf("can't alloc memory!!\n");
+			return false;
+		}
+
+		// get clut
+		uint32 clut_pos = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+		fseek(bcut_mgr.fp, clut_pos, SEEK_SET);
+		fread(bcut_mgr.clut, bcut_mgr.csize, 1, bcut_mgr.fp);
+
+		// output clut
+		char tpath[_MAX_PATH] = {0};
+		MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, bcut_mgr.name, "pal", DIR_MODE);
+		if (!MtoFileOpen(&cfp, tpath, "wb", NULL)) {
+			printf("CLUTが出力できません: %s\n", tpath);
+			return false;
+		}
+		fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, cfp);
+		fclose(cfp);
+
+		// 元に戻す
+		fseek(bcut_mgr.fp, fpos, SEEK_SET);
+	} else {
+		bcut_mgr.clut  = NULL;
+		bcut_mgr.csize = 0;
+	}
+
+	return true;
+}
 
 
 /*========================================================
@@ -405,8 +539,10 @@ int main(int argc, char *argv[])
 	MtoGetExtension(ext, sizeof(ext), argv[bcut_mgr.infile], 0);
 	if (strcmp(ext, "tm2") == 0) {
 		bcut_mgr.pict = ePICT_TIM2;
-	}  else if (strcmp(ext, "bmp") == 0) {
+	} else if (strcmp(ext, "bmp") == 0) {
 		bcut_mgr.pict = ePICT_BMP;
+	} else if (strcmp(ext, "tga") == 0) {
+		bcut_mgr.pict = ePICT_TGA;
 	} else {
 		printf("対応していない画像ファイルです: %s\n", ext);
 		_release();
@@ -420,6 +556,15 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 		if (!_read_bmp_clut()) {
+			_release();
+			return 0;
+		}
+	} else if (bcut_mgr.pict == ePICT_TGA) {
+		if (!_read_check_tga()) {
+			_release();
+			return 0;
+		}
+		if (!_read_tga_clut()) {
 			_release();
 			return 0;
 		}
