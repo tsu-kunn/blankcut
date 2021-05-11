@@ -355,7 +355,7 @@ static bool _read_bmp_clut(void)
 =========================================================*/
 static bool _read_check_tga(void)
 {
-	// get tga header
+	// get tga header(アライメントに沿っていないので個別読み込み)
 	fread(&bcut_mgr.tgaHead.IDField     , sizeof(bcut_mgr.tgaHead.IDField)     , 1, bcut_mgr.fp);
 	fread(&bcut_mgr.tgaHead.usePalette  , sizeof(bcut_mgr.tgaHead.usePalette)  , 1, bcut_mgr.fp);
 	fread(&bcut_mgr.tgaHead.imageType   , sizeof(bcut_mgr.tgaHead.imageType)   , 1, bcut_mgr.fp);
@@ -375,7 +375,6 @@ static bool _read_check_tga(void)
 		printf("原点が0ではありません\n");
 		return false;
 	}
-}
 
 	// 対応していないイメージタイプ？
 	if (bcut_mgr.tgaHead.imageType != TGA_IMAGE_TYPE_INDEX && bcut_mgr.tgaHead.imageType != TGA_IMAGE_TYPE_FULL) {
@@ -390,7 +389,7 @@ static bool _read_check_tga(void)
 			return false;
 		}
 		if (bcut_mgr.tgaHead.paletteBit != 32) {
-			printf("対応しているのは32bitのみです: %d\n", bcut_mgr.tgaHead.paletteBit);
+			printf("対応しているパレットは32bitのみです: %d\n", bcut_mgr.tgaHead.paletteBit);
 			return false;
 		}
 	}
@@ -461,7 +460,7 @@ static bool _read_tga_clut(void)
 		}
 
 		// get clut
-		uint32 clut_pos = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+		uint32 clut_pos = TGA_HEADER_SIZE + bcut_mgr.tgaHead.IDField;
 		fseek(bcut_mgr.fp, clut_pos, SEEK_SET);
 		fread(bcut_mgr.clut, bcut_mgr.csize, 1, bcut_mgr.fp);
 
