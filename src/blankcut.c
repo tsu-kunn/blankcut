@@ -367,7 +367,7 @@ static bool _read_check_tga(void)
 	fread(&bcut_mgr.tgaHead.imageW      , sizeof(bcut_mgr.tgaHead.imageW)      , 1, bcut_mgr.fp);
 	fread(&bcut_mgr.tgaHead.imageH      , sizeof(bcut_mgr.tgaHead.imageH)      , 1, bcut_mgr.fp);
 	fread(&bcut_mgr.tgaHead.imageBit    , sizeof(bcut_mgr.tgaHead.imageBit)    , 1, bcut_mgr.fp);
-	fread(&bcut_mgr.tgaHead.discripter  , sizoef(bcut_mgr.tgaHead.discripter)  , 1, bcut_mgr.fp);
+	fread(&bcut_mgr.tgaHead.discripter  , sizeof(bcut_mgr.tgaHead.discripter)  , 1, bcut_mgr.fp);
 
 	// check tga
 	// 原点が0ではない？
