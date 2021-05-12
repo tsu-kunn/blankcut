@@ -19,6 +19,8 @@ static bool _get_picture_data(FILE *fp, uint8 *work, uint32 msize, const uint16 
 
 	if (bcut_mgr.pict == ePICT_BMP) {
 		hsize = bcut_mgr.bmpfHead.bfOffBits;
+	} else if (bcut_mgr.pict == ePICT_TGA) {
+		hsize = TGA_HEADER_SIZE + bcut_mgr.tgaHead.IDField + bcut_mgr.bitcount * 4;
 	} else {
 		hsize = sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize;
 	}
@@ -90,7 +92,6 @@ static bool _size_revision(BlankCutPixcelHeader *bcp_head, const uint8 rev)
 		printf("余白を省いた後の高さが不正です\n");
 		return false;
 	}
-
 
 	// width
 	uint8 tx[2];
@@ -288,6 +289,57 @@ static bool _output_bmp(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
 }
 
 /*========================================================
+【機能】TGAの出力
+=========================================================*/
+static bool _output_tga(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
+{
+	FILE *fp;
+	struct TGAHeader tgaHead;
+
+	char tpath[_MAX_PATH] = {0};
+	char tname[_MAX_PATH] = {0};
+	snprintf(tname, sizeof(tname), "%s_%03d", bcut_mgr.name, bcut_mgr.bc_head.PixcelNum);
+	MtoMakePath(tpath, sizeof(tpath), bcut_mgr.dir, tname, "tga", DIR_MODE);
+
+	// TGA作成
+	tgaHead.IDField      = bcut_mgr.tgaHead.IDField;
+	tgaHead.usePalette   = bcut_mgr.tgaHead.usePalette;
+	tgaHead.imageType    = bcut_mgr.tgaHead.imageType;
+	tgaHead.paletteIndex = bcut_mgr.tgaHead.paletteIndex;
+	tgaHead.paletteColor = bcut_mgr.tgaHead.paletteColor;
+	tgaHead.paletteBit   = bcut_mgr.tgaHead.paletteBit;
+	tgaHead.imageX       = bcut_mgr.tgaHead.imageX;
+	tgaHead.imageY       = bcut_mgr.tgaHead.imageY;
+	tgaHead.imageW       = bcp_head->wh.w;
+	tgaHead.imageH       = bcp_head->wh.h;
+	tgaHead.imageBit     = bcut_mgr.tgaHead.imageBit;
+	tgaHead.discripter   = bcut_mgr.tgaHead.discripter;
+
+	// TGA出力(フッターなし)
+	if (MtoFileOpen(&fp, tpath, "wb", NULL)) {
+		// アライメントに沿っていないので個別出力
+		fwrite(&tgaHead.IDField     , sizeof(tgaHead.IDField)     , 1, fp);
+		fwrite(&tgaHead.usePalette  , sizeof(tgaHead.usePalette)  , 1, fp);
+		fwrite(&tgaHead.imageType   , sizeof(tgaHead.imageType)   , 1, fp);
+		fwrite(&tgaHead.paletteIndex, sizeof(tgaHead.paletteIndex), 1, fp);
+		fwrite(&tgaHead.paletteColor, sizeof(tgaHead.paletteColor), 1, fp);
+		fwrite(&tgaHead.paletteBit  , sizeof(tgaHead.paletteBit)  , 1, fp);
+		fwrite(&tgaHead.imageX      , sizeof(tgaHead.imageX)      , 1, fp);
+		fwrite(&tgaHead.imageY      , sizeof(tgaHead.imageY)      , 1, fp);
+		fwrite(&tgaHead.imageW      , sizeof(tgaHead.imageW)      , 1, fp);
+		fwrite(&tgaHead.imageH      , sizeof(tgaHead.imageH)      , 1, fp);
+		fwrite(&tgaHead.imageBit    , sizeof(tgaHead.imageBit)    , 1, fp);
+		fwrite(&tgaHead.discripter  , sizeof(tgaHead.discripter)  , 1, fp);
+
+		if (bcut_mgr.csize) fwrite(bcut_mgr.clut, bcut_mgr.csize, 1, fp);
+		fwrite(mem, bcp_head->size, 1, fp);
+		fclose(fp);
+	}
+
+	return true;
+}
+
+/*========================================================
 【機能】TIM2の出力
 =========================================================*/
 static bool _output_tim2(const uint8 *mem, const BlankCutPixcelHeader *bcp_head)
@@ -364,6 +416,8 @@ static uint8 *_blank_cut(uint8 *work, const uint32 msize, BlankCutPixcelHeader *
 	if (bcut_mgr.optg) {
 		if (bcut_mgr.pict == ePICT_BMP) {
 			_output_bmp(mem, bcp_head);
+		} else if (bcut_mgr.pict == ePICT_TGA) {
+			_output_tga(mem, bcp_head);
 		} else {
 			_output_tim2(mem, bcp_head);
 		}
@@ -510,6 +564,8 @@ bool search_blank_output(void)
 	// set position is pixcel data
 	if (bcut_mgr.pict == ePICT_BMP) {
 		fseek(bcut_mgr.fp, bcut_mgr.bmpfHead.bfOffBits, SEEK_SET);
+	} else if (bcut_mgr.pict == ePICT_TGA) {
+		fseek(bcut_mgr.fp, (TGA_HEADER_SIZE + bcut_mgr.tgaHead.IDField + bcut_mgr.bitcount * 4), SEEK_SET);
 	} else {
 		fseek(bcut_mgr.fp, (sizeof(TIM2_FILEHEADER) + bcut_mgr.tm2pHead.HeaderSize), SEEK_SET);
 	}
